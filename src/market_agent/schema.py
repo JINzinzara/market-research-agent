@@ -129,11 +129,11 @@ class ResearchResult(Model):
         Returns:
             The validated result.
         """
-        available_ids = [source.source_ids for source in self.sources]
+        available_ids = [source.source_id for source in self.sources]
         available_ids_set = set(available_ids)
         cited_id_set = set(self.source_ids)
 
-        if len(available_ids) != len(cited_id_set):
+        if len(available_ids) != len(available_ids_set):
             raise ValueError("sources must have unique source IDs")
 
         if len(self.source_ids) != len(cited_id_set):
@@ -155,6 +155,6 @@ class ResearchState(TypedDict, total=False):
     draft: DraftAnswer
     reflection: Reflection
     research_round: int
-    llm_response: list[dict[str, Any]]
+    llm_responses: list[dict[str, Any]]
     error: str
     result: ResearchResult
