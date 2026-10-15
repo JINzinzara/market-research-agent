@@ -42,7 +42,7 @@ async def call_llm(
         "keep_alive": "10m",
     }
     if schema is not None:
-        payload["format"] == schema
+        payload["format"] = schema
 
     response = await client.post("/api/chat", json=payload)
     response.raise_for_status()  # inspect HTTP status of response
