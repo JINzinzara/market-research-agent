@@ -5,6 +5,7 @@ import asyncio
 import json
 from pathlib import Path
 
+from .benchmark import DATASET, run_benchmark, score_reviews
 from .evaluate import evaluate, save_report
 from .records import ReplayMismatch, RunStore
 from .runtime import ResearchRequest, replay_run, run_research
@@ -16,17 +17,27 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     research = sub.add_parser("research")
     research.add_argument("question")
-    research.add_argument("--mode", choices=["demo", "live"], default="demo")
-    research.add_argument("--planner", choices=["baseline", "ollama", "openai"], default="baseline")
-    research.add_argument("--web", action="store_true", help="Paid OpenAI web news/macro research; requires --mode live --planner openai")
+    research.add_argument("--mode", choices=["demo", "live"], default="live")
+    research.add_argument("--planner", choices=["baseline", "ollama", "openai"], default="openai")
+    research.add_argument("--web", action=argparse.BooleanOptionalAction, default=True,
+                          help="Live OpenAI web research by default; --no-web selects the price/local-document path")
     research.add_argument("--scenario", default="none", choices=["none", "eth_timeout", "all_timeout",
                                                                "eth_missing", "eth_invalid", "eth_rate_limit"])
     research.add_argument("--as-of", default=None, help="Timezone-aware ISO timestamp")
     replay = sub.add_parser("replay")
     replay.add_argument("run_id")
     evaluation = sub.add_parser("evaluate")
-    evaluation.add_argument("--planner", choices=["baseline", "ollama", "openai"], default="baseline")
-    evaluation.add_argument("--output", type=Path, default=Path(".market-agent/evaluation.json"))
+    evaluation.add_argument("--dataset", type=Path, default=DATASET)
+    evaluation.add_argument("--limit", type=int)
+    evaluation.add_argument("--repeats", type=int, default=1)
+    evaluation.add_argument("--output", type=Path, default=Path(".market-agent/research-benchmark.json"))
+    regression = sub.add_parser("regression", help="Archived synthetic application-contract checks")
+    regression.add_argument("--planner", choices=["baseline", "ollama", "openai"], default="baseline")
+    regression.add_argument("--output", type=Path, default=Path(".market-agent/regression.json"))
+    score = sub.add_parser("score", help="Apply attributed human semantic reviews; no model call")
+    score.add_argument("report", type=Path)
+    score.add_argument("reviews", type=Path)
+    score.add_argument("--output", type=Path, required=True)
     serve = sub.add_parser("serve")
     serve.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
@@ -52,6 +63,18 @@ def main() -> None:
             print(json.dumps({"run_id": result["run_id"], **result["comparison"]}, ensure_ascii=False, indent=2))
             if not result["comparison"]["same_result"]:
                 raise SystemExit(1)
+        elif args.command == "evaluate":
+            result = asyncio.run(run_benchmark(limit=args.limit, repeats=args.repeats, dataset=args.dataset,
+                                               store=store, checkpoint=args.output))
+            print(f"{result['operational_completed']}/{result['total']} live research executions; semantic accuracy awaits review")
+            print(f"report={args.output.resolve()}")
+            print(f"reviews={args.output.with_suffix('.reviews.json').resolve()}")
+            if result["operational_completed"] != result["total"]:
+                raise SystemExit(1)
+        elif args.command == "score":
+            result = score_reviews(args.report, args.reviews, args.output)
+            print(json.dumps(result["quality"], ensure_ascii=False, indent=2))
+            print(f"report={args.output.resolve()}")
         else:
             result = asyncio.run(evaluate(args.planner))
             save_report(result, args.output)
