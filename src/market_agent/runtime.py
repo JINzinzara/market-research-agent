@@ -19,6 +19,7 @@ from .llm import ASTRA_MODEL, call_llm, call_openai, openai_output_text, usage_m
 from .records import RecordingTransport, ReplayTransport, RunStore
 from .schema import ResearchPlan, ResearchResult, Source
 from .tools import SYMBOLS, build_bm25, fetch_market_data, load_documents, search_documents
+from .web_research import MAX_WEB_TOOL_CALLS, WEB_PROMPT_VERSION, call_web_research, parse_web_research
 
 PACKAGE = Path(__file__).parent
 BINANCE_URL = "https://data-api.binance.vision"
@@ -53,6 +54,7 @@ class ResearchRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     mode: Literal["demo", "live"] = "demo"
     planner: Literal["baseline", "ollama", "openai"] = "baseline"
+    web: bool = False
     scenario: Literal["none", "eth_timeout", "all_timeout", "eth_missing",
                       "eth_invalid", "eth_rate_limit"] = "none"
     as_of: AwareDatetime | None = Field(default=None, strict=False)
@@ -66,6 +68,8 @@ class ResearchRequest(BaseModel):
 
     @model_validator(mode="after")
     def validate_mode(self):
+        if self.web and (self.mode != "live" or self.planner != "openai"):
+            raise ValueError("web research requires mode=live and planner=openai")
         if self.mode == "live" and self.scenario != "none":
             raise ValueError("failure injection is available only in demo mode")
         if self.mode == "demo" and self.as_of is not None:
@@ -154,19 +158,31 @@ async def run_research(
         "trace": trace, "http": http_events, "llm_responses": llm_responses,
         "planner_validation": {"output_valid": None, "matches_request": None},
     }
+    if request.web:
+        record["metadata"].update(model_role="hosted web researcher; Python handles optional market figures",
+                                   web_prompt_version=WEB_PROMPT_VERSION,
+                                   max_web_tool_calls=MAX_WEB_TOOL_CALLS)
+        record["web_retrieved_at"] = replay_record["web_retrieved_at"] if replay else started_at.isoformat()
     market_inner = demo_transport(request.scenario) if request.mode == "demo" else httpx.AsyncHTTPTransport()
     market_transport = RecordingTransport(replay or market_inner, http_events)
     llm_transport = RecordingTransport(replay or httpx.AsyncHTTPTransport(), http_events)
     sources, failures = [], []
     collection_rounds = 0
     plan = baseline_plan(request.question)
+    if request.web:
+        # The bounded price parser must not reject news-only or macro-only research.
+        plan = (plan.model_copy(update={"document_query": request.question})
+                if plan.action == "research" and plan.symbols
+                else ResearchPlan(action="research", document_query=request.question))
     llm_url = OPENAI_URL if request.planner == "openai" else OLLAMA_URL
     api_key = os.environ.get("OPENAI_API_KEY") if request.planner == "openai" and not replay else None
     async with httpx.AsyncClient(base_url=BINANCE_URL, transport=market_transport, timeout=10) as market_client, \
             httpx.AsyncClient(base_url=llm_url, transport=llm_transport, timeout=300,
                               headers={"Authorization": f"Bearer {api_key}"} if api_key else {}) as llm_client:
         try:
-            if request.planner != "baseline" and plan.action == "research":
+            if request.web and not api_key and not replay:
+                raise RuntimeError("OPENAI_API_KEY is not configured in the server environment")
+            if request.planner != "baseline" and plan.action == "research" and not request.web:
                 tick = perf_counter()
                 messages = [
                     {"role": "system", "content": SYSTEM_PROMPT},
@@ -221,7 +237,24 @@ async def run_research(
                         event.update(output=None, error=failure)
                     event["duration_ms"] = round((perf_counter() - tick) * 1000, 3)
                     trace.append(event)
-                if plan.document_query:
+                web_answer = None
+                if request.web:
+                    tick = perf_counter()
+                    event = {"tool": "web.research", "input": {"question": request.question}}
+                    try:
+                        raw = await call_web_research(llm_client, request.question, as_of=as_of)
+                        llm_responses.append(without_reasoning(raw))
+                        web_answer, found = parse_web_research(
+                            raw, retrieved_at=datetime.fromisoformat(record["web_retrieved_at"]))
+                        sources.extend(found)
+                        event.update(output=[source.source_id for source in found], error=None)
+                    except (httpx.HTTPError, ValueError, RuntimeError) as exc:
+                        failure = {"symbol": "web", "type": type(exc).__name__, "message": str(exc)}
+                        failures.append(failure)
+                        event.update(output=None, error=failure)
+                    event["duration_ms"] = round((perf_counter() - tick) * 1000, 3)
+                    trace.append(event)
+                elif plan.document_query:
                     index = build_bm25(documents)
                     queries = [plan.document_query]
                     for round_index in range(2):
@@ -239,7 +272,7 @@ async def run_research(
                             break
                         queries.append("klines UTC")
                         collection_rounds = 2
-                result = render_result(request, plan, sources, failures)
+                result = render_result(request, plan, sources, failures, web_answer=web_answer)
         except (httpx.HTTPError, ValueError, RuntimeError) as exc:
             trace.append({"tool": "workflow", "error": {"type": type(exc).__name__, "message": str(exc)}})
             result = ResearchResult(status="error", answer=f"실행을 완료하지 못했습니다: {type(exc).__name__}: {exc}",
@@ -255,11 +288,11 @@ async def run_research(
             envelope = json.loads(event.get("response_text", "{}"))
         except ValueError:
             envelope = {}
-        usage.append(usage_metadata(envelope if isinstance(envelope, dict) else {}, request.planner))
+        usage.append(usage_metadata(envelope if isinstance(envelope, dict) else {}, request.planner, web=request.web))
     llm_calls = len(model_events)
     record["metrics"] = {
         "duration_ms": round((perf_counter() - started) * 1000, 3),
-        "http_calls": len(http_events), "tool_calls": sum(event["tool"] in {"market.fetch", "documents.search"} for event in trace),
+        "http_calls": len(http_events), "tool_calls": sum(event["tool"] in {"market.fetch", "documents.search", "web.research"} for event in trace),
         "collection_rounds": collection_rounds,
         "llm_calls": llm_calls,
         "live_llm_calls": 0 if replay else llm_calls,
@@ -267,6 +300,10 @@ async def run_research(
         "network_attempts": 0 if replay else len(http_events) if request.mode == "live" else llm_calls,
         "usage": usage,
     }
+    if request.web:
+        record["metrics"]["web_tool_calls"] = sum(row.get("web_tool_calls", 0) for row in usage)
+        record["metrics"]["web_search_calls"] = sum(row.get("web_search_calls", 0) for row in usage)
+        record["metrics"]["citation_count"] = sum(source.source_id.startswith("web-") for source in sources)
     if replay_record:
         record["comparison"] = compare_results(replay_record["result"], record["result"])
     if store:
@@ -274,10 +311,12 @@ async def run_research(
     return record
 
 
-def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[Source], failures: list[dict]) -> ResearchResult:
+def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[Source], failures: list[dict],
+                  *, web_answer: str | None = None) -> ResearchResult:
     market = [source for source in sources if source.kind == "market"]
     docs = [source for source in sources if source.kind == "document"]
-    lines = ["합성 데모 데이터 — 실제 시세가 아닙니다." if request.mode == "demo" else "Binance 공개 API 조회 결과."]
+    lines = ["뉴스·거시경제 웹 조사." if request.web and not market else
+             "합성 데모 데이터 — 실제 시세가 아닙니다." if request.mode == "demo" else "Binance 공개 API 조회 결과."]
     for source in market:
         value = json.loads(source.content)
         display = Decimal(value["return_pct"]).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -287,8 +326,20 @@ def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[So
         lines.append(f"UTC 구간: [{window['start_utc']}, {window['end_utc_exclusive']}).")
         lines.append("(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.")
     for failure in failures:
-        lines.append(f"확인 실패: {failure['symbol']} · {failure['type']}. 해당 종목의 수치는 제시하지 않습니다.")
-    if not plan.symbols:
+        detail = "해당 수집 항목의 근거는 제시하지 않습니다." if request.web else "해당 종목의 수치는 제시하지 않습니다."
+        lines.append(f"확인 실패: {failure['symbol']} · {failure['type']}. {detail}")
+    if request.web:
+        if web_answer:
+            status = "partial" if failures else "completed"
+            lines.append(web_answer)
+            lines.append("웹 검색 제공자의 인용이 포함된 조사입니다. 기사 전문 수집·문장별 사실 검증·발행일 검증을 완료했다는 뜻은 아닙니다.")
+            if is_causal(request.question):
+                status = "insufficient_evidence"
+                lines.append("기사의 해석과 사건의 동시 발생만으로 가격 변화의 인과관계를 입증하지 않습니다.")
+        else:
+            status = "partial" if market else "error"
+            lines.append("인용 가능한 웹 조사 결과를 얻지 못했습니다. 뉴스·거시경제 결론은 제시하지 않습니다.")
+    elif not plan.symbols:
         # Search matches alone do not prove that an arbitrary question was answered.
         status = "insufficient_evidence"
         lines.append("검토된 API 문서에서 관련 자료를 찾았습니다. 아래 발췌를 확인해 주세요." if docs
@@ -301,7 +352,7 @@ def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[So
         lines.append("가격 변화는 계산했지만, API 설명 문서는 상승·하락의 원인을 입증하지 못합니다.")
     else:
         status = "partial" if failures else "completed"
-    for source in docs:
+    for source in ([] if request.web else docs):
         lines.append(f"[{source.source_id}] {source.content}")
     return ResearchResult(status=status, answer="\n\n".join(lines), sources=sources,
                           source_ids=[source.source_id for source in sources])
