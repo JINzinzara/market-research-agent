@@ -18,6 +18,7 @@ def main() -> None:
     research.add_argument("question")
     research.add_argument("--mode", choices=["demo", "live"], default="demo")
     research.add_argument("--planner", choices=["baseline", "ollama", "openai"], default="baseline")
+    research.add_argument("--web", action="store_true", help="Paid OpenAI web news/macro research; requires --mode live --planner openai")
     research.add_argument("--scenario", default="none", choices=["none", "eth_timeout", "all_timeout",
                                                                "eth_missing", "eth_invalid", "eth_rate_limit"])
     research.add_argument("--as-of", default=None, help="Timezone-aware ISO timestamp")
@@ -39,7 +40,7 @@ def main() -> None:
             return
         if args.command == "research":
             request = ResearchRequest(question=args.question, mode=args.mode, planner=args.planner,
-                                      scenario=args.scenario, as_of=args.as_of)
+                                      scenario=args.scenario, as_of=args.as_of, web=args.web)
             result = asyncio.run(run_research(request, store=store))
             print(result["result"]["answer"])
             print(f"\nstatus={result['result']['status']} · run_id={result['run_id']}")
