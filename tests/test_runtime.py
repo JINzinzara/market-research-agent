@@ -23,7 +23,7 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(httpx.AsyncHTTPTransport, "handle_async_request", side_effect=AssertionError("network forbidden")):
             for scenario, status in [("none", "completed"), ("eth_timeout", "partial"), ("all_timeout", "error")]:
                 with self.subTest(scenario=scenario):
-                    record = await run_research(ResearchRequest(question="BTC ETH BNB 7d", scenario=scenario))
+                    record = await run_research(ResearchRequest(mode="demo", web=False, planner="baseline", question="BTC ETH BNB 7d", scenario=scenario))
                     self.assertEqual(record["result"]["status"], status)
                     self.assertEqual(record["metrics"]["http_calls"], 3)
                     self.assertEqual(record["metrics"]["network_attempts"], 0)
@@ -32,9 +32,12 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(replay["comparison"]["same_result"])
                     self.assertEqual(replay["replay_of"], record["run_id"])
                     self.assertEqual(replay["metrics"]["network_attempts"], 0)
+                    legacy = deepcopy(record)
+                    legacy["request"].pop("web")
+                    self.assertTrue((await replay_run(legacy))["comparison"]["same_result"])
 
     async def test_replay_rejects_wrong_parameters_and_unused_responses(self):
-        record = await run_research(ResearchRequest(question="BTC 7d"))
+        record = await run_research(ResearchRequest(mode="demo", web=False, planner="baseline", question="BTC 7d"))
         wrong = deepcopy(record)
         wrong["http"][0]["url"] += "&surprise=1"
         with self.assertRaises(ReplayMismatch):
@@ -48,17 +51,17 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
             await replay_run(missing)
 
     async def test_second_collection_round_only_retries_documents(self):
-        record = await run_research(ResearchRequest(question="캔들 문서"))
+        record = await run_research(ResearchRequest(mode="demo", web=False, planner="baseline", question="캔들 문서"))
         self.assertEqual(record["metrics"]["collection_rounds"], 2)
         self.assertEqual(record["metrics"]["http_calls"], 0)
         self.assertEqual(len(record["trace"]), 2)
         self.assertTrue(record["result"]["sources"])
-        unknown = await run_research(ResearchRequest(question="문서 zzzunknown"))
+        unknown = await run_research(ResearchRequest(mode="demo", web=False, planner="baseline", question="문서 zzzunknown"))
         self.assertEqual(unknown["result"]["sources"], [])
         self.assertEqual(unknown["metrics"]["collection_rounds"], 1)
 
     async def test_rate_limit_stops_remaining_symbol_requests(self):
-        record = await run_research(ResearchRequest(question="BTC ETH BNB 7d", scenario="eth_rate_limit"))
+        record = await run_research(ResearchRequest(mode="demo", web=False, planner="baseline", question="BTC ETH BNB 7d", scenario="eth_rate_limit"))
         self.assertEqual(record["result"]["status"], "partial")
         self.assertEqual(record["metrics"]["http_calls"], 2)
         self.assertEqual([failure["type"] for failure in record["failures"]], ["HTTPStatusError", "SkippedAfterRateLimit"])
@@ -70,7 +73,7 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
                     "message": {"role": "assistant", "content": json.dumps(plan), "thinking": "private thought"}}
         with patch("market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(
             lambda request: httpx.Response(200, json=response))):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="ollama"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="ollama"))
         self.assertEqual(record["result"]["status"], "completed")
         self.assertEqual(record["metrics"]["llm_calls"], 1)
         self.assertEqual(record["metrics"]["live_llm_calls"], 1)
@@ -86,7 +89,7 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
             "action": "research", "symbols": ["ETHUSDT"], "period": "7d"})}}
         with patch("market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(
             lambda request: httpx.Response(200, json=response))):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="ollama"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="ollama"))
         self.assertEqual(record["result"]["status"], "error")
         self.assertEqual(record["metrics"]["http_calls"], 1)
         self.assertEqual(record["result"]["sources"], [])
@@ -99,7 +102,7 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
             plan["message"] = "Missing symbol or period: clarify."
             return httpx.Response(200, json={"done": True, "message": {"content": json.dumps(plan)}})
         with patch("market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(handler)):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="ollama"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="ollama"))
         self.assertEqual(requests[0]["format"]["properties"]["message"], {"type": "null"})
         self.assertEqual(requests[0]["format"]["properties"]["action"]["enum"], ["research"])
         self.assertEqual(record["result"]["status"], "error")
@@ -111,7 +114,7 @@ class RuntimeTests(unittest.IsolatedAsyncioTestCase):
             "action": "research", "symbols": ["ETHUSDT", "BTCUSDT"], "period": "7d"})}}
         with patch("market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(
             lambda request: httpx.Response(200, json=response))):
-            record = await run_research(ResearchRequest(question="BTC ETH 7d", planner="ollama"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC ETH 7d", planner="ollama"))
         self.assertEqual(record["result"]["status"], "completed")
 
     async def test_twenty_development_cases_and_oracle_catches_mutation(self):
@@ -132,7 +135,7 @@ class InputAndStoreTests(unittest.TestCase):
                         {"as_of": "2026-10-12T00:00:00Z"}, {"mode": "live", "scenario": "eth_timeout"},
                         {"question": 123}, {"extra": "bad"}]:
             with self.subTest(changes=changes), self.assertRaises(ValidationError):
-                ResearchRequest.model_validate({"question": "BTC 7d", **changes})
+                ResearchRequest.model_validate({"question": "BTC 7d", "mode": "demo", "planner": "baseline", "web": False, **changes})
 
     def test_parser_does_not_change_rolling_or_mixed_periods(self):
         for question in ["BTC rolling 24h", "BTC 최근 24시간", "BTC 7d 24h", "BTC 2026-10-01", "BTC 30d",
