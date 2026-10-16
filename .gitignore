@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local workflow data and private application planning
+.DS_Store
+.market-agent/
+.env.*
+docs/bap-*.md
