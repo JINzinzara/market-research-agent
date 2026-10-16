@@ -1,0 +1,22 @@
+[
+  {"id":"btc-7d","question":"BTCUSDT 7d","status":"completed","returns":{"BTCUSDT":"10"},"http_calls":1},
+  {"id":"eth-7d","question":"이더리움 7일 비교","status":"completed","returns":{"ETHUSDT":"-10"},"http_calls":1},
+  {"id":"bnb-7d","question":"BNB 7d","status":"completed","returns":{"BNBUSDT":"0"},"http_calls":1},
+  {"id":"compare-7d","question":"BTCUSDT와 ETHUSDT, BNBUSDT의 완료된 UTC 7일 비교","status":"completed","returns":{"BTCUSDT":"10","ETHUSDT":"-10","BNBUSDT":"0"},"http_calls":3},
+  {"id":"btc-one-bar","question":"BTC 24h","status":"completed","returns":{"BTCUSDT":"200/53"},"http_calls":1},
+  {"id":"eth-one-bar","question":"ETH 완료된 UTC 일봉 1개","status":"completed","returns":{"ETHUSDT":"-100/19"},"http_calls":1},
+  {"id":"bnb-one-bar","question":"BNB 하루","status":"completed","returns":{"BNBUSDT":"0"},"http_calls":1},
+  {"id":"partial-timeout","question":"BTC ETH BNB 7d","scenario":"eth_timeout","status":"partial","returns":{"BTCUSDT":"10","BNBUSDT":"0"},"http_calls":3,"failure_type":"ReadTimeout"},
+  {"id":"partial-missing","question":"BTC ETH 7d","scenario":"eth_missing","status":"partial","returns":{"BTCUSDT":"10"},"http_calls":2,"failure_type":"ValueError"},
+  {"id":"partial-invalid","question":"BTC ETH 7d","scenario":"eth_invalid","status":"partial","returns":{"BTCUSDT":"10"},"http_calls":2,"failure_type":"ValueError"},
+  {"id":"partial-rate-limit","question":"BTC ETH 7d","scenario":"eth_rate_limit","status":"partial","returns":{"BTCUSDT":"10"},"http_calls":2,"failure_type":"HTTPStatusError"},
+  {"id":"all-timeout","question":"BTC ETH BNB 7d","scenario":"all_timeout","status":"error","returns":{},"http_calls":3,"failure_type":"ReadTimeout"},
+  {"id":"missing-period","question":"BTC와 ETH 비교","status":"needs_clarification","returns":{},"http_calls":0},
+  {"id":"missing-symbol","question":"7일 수익률 비교","status":"needs_clarification","returns":{},"http_calls":0},
+  {"id":"rolling-window","question":"BTC rolling 24h","status":"needs_clarification","returns":{},"http_calls":0},
+  {"id":"unsupported-symbol","question":"BTC와 SOLUSDT 7d","status":"unsupported","returns":{},"http_calls":0},
+  {"id":"causality-not-proven","question":"왜 비트코인은 7일 동안 상승했어?","status":"insufficient_evidence","returns":{"BTCUSDT":"10"},"http_calls":1},
+  {"id":"document-reference","question":"Binance klines API UTC 일봉 문서","status":"insufficient_evidence","returns":{},"http_calls":0,"documents_required":true},
+  {"id":"document-miss","question":"문서 zzzquantumunknown","status":"insufficient_evidence","returns":{},"http_calls":0},
+  {"id":"unsupported-trading","question":"BTC 7d 선물 매수 추천","status":"unsupported","returns":{},"http_calls":0}
+]
