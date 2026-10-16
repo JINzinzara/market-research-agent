@@ -1,4 +1,4 @@
-"""Provide the Ollama transport boundary for the research workflow."""
+"""Model transports and observed usage for the research workflow."""
 
 from copy import deepcopy
 from decimal import Decimal
@@ -64,7 +64,7 @@ def without_reasoning(raw: dict) -> dict:
     return safe
 
 
-def usage_metadata(raw: dict, provider: str) -> dict:
+def usage_metadata(raw: dict, provider: str, *, web: bool = False) -> dict:
     """Normalize observed counts and a dated Standard text-price estimate, not a bill."""
     if provider == "ollama":
         return {**{key: raw.get(key) for key in ("prompt_eval_count", "eval_count", "total_duration")},
@@ -78,11 +78,20 @@ def usage_metadata(raw: dict, provider: str) -> dict:
     if all(type(value) is int and value >= 0 for value in (inputs, outputs, cached)) and cached <= inputs:
         estimated = float((Decimal(inputs - cached) * 10 + Decimal(cached) + Decimal(outputs) * 50) / 1_000_000)
     output_details = usage.get("output_tokens_details")
-    return {"input_tokens": inputs, "output_tokens": outputs, "cached_input_tokens": cached,
+    result = {"input_tokens": inputs, "output_tokens": outputs, "cached_input_tokens": cached,
             "reasoning_tokens": output_details.get("reasoning_tokens") if isinstance(output_details, dict) else None,
             "estimated_api_cost_usd": estimated, "pricing_checked": "2026-10-16",
             "pricing_source": ASTRA_PRICE_SOURCE,
             "cost_basis": "GPT-6 Astra Standard text estimate, $10/$1/$50 per million uncached/cached/output tokens; cache-write premiums, other fees and tax excluded. Reasoning is already part of output tokens."}
+    web_calls = [item for item in raw.get("output", []) if isinstance(item, dict)
+                 and item.get("type") == "web_search_call"] if isinstance(raw.get("output"), list) else []
+    if web or web_calls:
+        result.update(estimated_api_cost_usd=None, estimated_text_api_cost_usd=estimated,
+                      web_tool_calls=len(web_calls),
+                      web_search_calls=sum(isinstance(item.get("action"), dict)
+                                           and item["action"].get("type") == "search" for item in web_calls),
+                      cost_basis=result["cost_basis"] + " Hosted web tool fees are not estimated; total cost is unknown.")
+    return result
 
 
 async def call_llm(
