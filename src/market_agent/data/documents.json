@@ -1,0 +1,26 @@
+[
+  {
+    "source_id": "doc-klines",
+    "kind": "document",
+    "title": "Binance Spot API · Klines / 일봉",
+    "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+    "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+    "retrieved_at": "2026-10-15T23:52:31Z"
+  },
+  {
+    "source_id": "doc-market-api",
+    "kind": "document",
+    "title": "Binance Spot API · Public market data / 공개 시장 자료",
+    "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+    "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+    "retrieved_at": "2026-10-15T23:52:31Z"
+  },
+  {
+    "source_id": "doc-http-errors",
+    "kind": "document",
+    "title": "Binance Spot API · HTTP errors / 오류",
+    "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+    "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+    "retrieved_at": "2026-10-15T23:52:31Z"
+  }
+]
