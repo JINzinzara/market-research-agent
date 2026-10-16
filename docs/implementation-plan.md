@@ -47,3 +47,7 @@ evaluate.py → 같은 runtime.py → 독립 기대값 검사 → 원시 평가 
 ## 계획 계약 수정과 OpenAI 연결 준비
 
 실제 사용 중 발견한 research/message 충돌을 생성용 JSON Schema의 research 분기와 null message 제약·명시적 프롬프트로 수정했다. 일반 ResearchPlan의 업무 검증은 유지한다. 종목 순서만 다른 계획은 허용한다. OpenAI Responses 경계를 HTTPX로 추가했으며 별도 SDK·프레임워크 의존성은 넣지 않았다. GPT-6 Astra의 reasoning low·최대 출력 1,024토큰은 비용을 제한하기 위한 초기 가정이다. 공식 지원 옵션이라는 것과 이 과제의 최적값이라는 것은 다르다. 실제 모델에 관한 분모·사용량·제약은 [지표 문서](metrics-and-model-comparison.md)를 따른다.
+
+## 선택형 외부 웹 조사
+
+`web=true`, `mode=live`, `planner=openai`는 기존 가격 계획 생성과 별도 분기다. 선택적 Binance 수치 수집 → OpenAI hosted search/read와 보고서 → 제공자 인용 형식 검증 → 결과·기록 순서다. 가격을 요구하지 않는 뉴스·거시 질문도 받는다. 앱이 자체 검색 엔진·기사 크롤러·범용 행동 루프를 구현한 것은 아니다. 호출 예산의 공식 정의, 초기 가정과 검증 한계는 [웹 조사 문서](web-research.md)에 있다.
