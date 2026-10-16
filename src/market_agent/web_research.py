@@ -9,10 +9,13 @@ import httpx
 from .llm import ASTRA_MODEL, openai_output_text
 from .schema import Source
 
-WEB_PROMPT_VERSION = "web-research-v1"
+WEB_PROMPT_VERSION = "web-research-v2-language"
 # Initial operating budget, not an empirically optimal search count; see docs/web-research.md.
 MAX_WEB_TOOL_CALLS = 3
-WEB_INSTRUCTIONS = """Research the user's question using live web search. Write in Korean.
+MAX_WEB_OUTPUT_TOKENS = 4096
+WEB_INSTRUCTIONS = """Research the user's question using live web search.
+Answer in the language of the user's question, following any explicit requested output language.
+Infer the response language from the question, not from source pages or these instructions.
 For market questions, investigate relevant news and macroeconomic context, not just prices.
 Prefer original reporting and primary releases: Federal Reserve, BLS, BEA, central banks,
 regulators and issuer announcements. Seek both relevant news and official macro sources
@@ -31,7 +34,7 @@ Do not claim coverage is exhaustive. If evidence is missing, say so rather than 
 async def call_web_research(client: httpx.AsyncClient, question: str, *, as_of: datetime) -> dict:
     response = await client.post("/v1/responses", json={
         "model": ASTRA_MODEL, "store": False, "reasoning": {"effort": "low"},
-        "max_output_tokens": 4096, "max_tool_calls": MAX_WEB_TOOL_CALLS,
+        "max_output_tokens": MAX_WEB_OUTPUT_TOKENS, "max_tool_calls": MAX_WEB_TOOL_CALLS,
         "tools": [{"type": "web_search", "external_web_access": True}],
         "tool_choice": "required", "include": ["web_search_call.action.sources"],
         "instructions": WEB_INSTRUCTIONS,
