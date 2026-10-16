@@ -1,0 +1,227 @@
+{
+  "suite": "market-research-pilot-v1",
+  "provenance": "AI-assisted primary-source-checked pilot; human adjudication pending; not held out",
+  "selection": "Six historical event groups, paired Korean/English prompts; policy, inflation, employment, GDP vintage, false-premise chronology, causal abstention. No synthetic prices.",
+  "cases": [
+    {
+      "event_id": "fomc-2024-09",
+      "category": "policy_numbers",
+      "reference_answer": "The target range was 4.75%–5.00%; the cut was 0.50 percentage points, equivalent to 50 basis points.",
+      "reference_urls": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm"
+      ],
+      "requirements": [
+        "Identify the September 18 decision, not another meeting.",
+        "Give both target-range bounds correctly.",
+        "Express the reduction as 0.50 percentage points or 50 basis points, not a 50% cut."
+      ],
+      "case_id": "fomc-2024-09-en",
+      "question": "Find the September 18, 2024 FOMC statement. What was the target federal funds range after the decision, and how large was the cut? Cite the original release and distinguish basis points from percent.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "fomc-2024-09",
+      "category": "policy_numbers",
+      "reference_answer": "The target range was 4.75%–5.00%; the cut was 0.50 percentage points, equivalent to 50 basis points.",
+      "reference_urls": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm"
+      ],
+      "requirements": [
+        "Identify the September 18 decision, not another meeting.",
+        "Give both target-range bounds correctly.",
+        "Express the reduction as 0.50 percentage points or 50 basis points, not a 50% cut."
+      ],
+      "case_id": "fomc-2024-09-ko",
+      "question": "2024년 9월 18일 FOMC 발표 원문을 찾아 결정 후 연방기금금리 목표 범위와 인하 폭을 알려줘. 퍼센트와 bp를 구분하고 원문을 인용해줘.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "cpi-2024-06",
+      "category": "reference_period_and_units",
+      "reference_answer": "June 2024 headline CPI-U fell 0.1% month-over-month on a seasonally adjusted basis and rose 3.0% over 12 months before seasonal adjustment. Release date: July 11, 2024.",
+      "reference_urls": [
+        "https://www.bls.gov/news.release/archives/cpi_07112024.htm"
+      ],
+      "requirements": [
+        "Use June 2024 as the reference month and July 11 as the release date.",
+        "Report -0.1% month-over-month, seasonally adjusted.",
+        "Report +3.0% year-over-year, before seasonal adjustment."
+      ],
+      "case_id": "cpi-2024-06-en",
+      "question": "Using the original BLS July 11, 2024 release for June CPI, report headline CPI-U month-over-month and year-over-year changes. Identify which is seasonally adjusted and distinguish the release date from the reference month.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "cpi-2024-06",
+      "category": "reference_period_and_units",
+      "reference_answer": "June 2024 headline CPI-U fell 0.1% month-over-month on a seasonally adjusted basis and rose 3.0% over 12 months before seasonal adjustment. Release date: July 11, 2024.",
+      "reference_urls": [
+        "https://www.bls.gov/news.release/archives/cpi_07112024.htm"
+      ],
+      "requirements": [
+        "Use June 2024 as the reference month and July 11 as the release date.",
+        "Report -0.1% month-over-month, seasonally adjusted.",
+        "Report +3.0% year-over-year, before seasonal adjustment."
+      ],
+      "case_id": "cpi-2024-06-ko",
+      "question": "2024년 7월 11일 BLS가 발표한 6월 CPI 원문으로 헤드라인 CPI-U의 전월 대비와 전년 대비 변화를 조사해줘. 계절조정 여부와 발표일·통계 기준월을 구분해줘.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "employment-2024-06",
+      "category": "original_release_vs_revision",
+      "reference_answer": "The initial release reported +206,000 nonfarm payroll jobs and 4.1% unemployment for June 2024. These are the values in the July 5 release, not later revisions.",
+      "reference_urls": [
+        "https://www.bls.gov/news.release/archives/empsit_07052024.htm"
+      ],
+      "requirements": [
+        "Use the original July 5 release for June.",
+        "Report +206,000 payroll employment and 4.1% unemployment.",
+        "Clearly label the values as initially reported rather than current revised estimates."
+      ],
+      "case_id": "employment-2024-06-en",
+      "question": "Find the original July 5, 2024 BLS Employment Situation release. What June nonfarm payroll increase and unemployment rate did it initially report? Do not substitute later revisions.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "employment-2024-06",
+      "category": "original_release_vs_revision",
+      "reference_answer": "The initial release reported +206,000 nonfarm payroll jobs and 4.1% unemployment for June 2024. These are the values in the July 5 release, not later revisions.",
+      "reference_urls": [
+        "https://www.bls.gov/news.release/archives/empsit_07052024.htm"
+      ],
+      "requirements": [
+        "Use the original July 5 release for June.",
+        "Report +206,000 payroll employment and 4.1% unemployment.",
+        "Clearly label the values as initially reported rather than current revised estimates."
+      ],
+      "case_id": "employment-2024-06-ko",
+      "question": "BLS의 2024년 7월 5일 고용 보고서 원문에서 6월 비농업 고용 증가와 실업률의 최초 발표치를 찾아줘. 이후 수정치로 바꾸지 말고 출처를 알려줘.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "gdp-2024-q2",
+      "category": "estimate_vintage",
+      "reference_answer": "The Q2 2024 advance estimate reported real GDP growth of 2.8% at an annual rate. This is the advance estimate, not a later revised estimate.",
+      "reference_urls": [
+        "https://www.bea.gov/news/2024/gross-domestic-product-second-quarter-2024-advance-estimate"
+      ],
+      "requirements": [
+        "Use the Q2 2024 advance estimate.",
+        "Report real GDP growth of 2.8%, annualized.",
+        "Do not replace the advance estimate with a later revision."
+      ],
+      "case_id": "gdp-2024-q2-en",
+      "question": "According to the BEA advance estimate for Q2 2024, what was real US GDP growth? Find the original release, identify its estimate vintage, and explain whether the growth rate is annualized.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "gdp-2024-q2",
+      "category": "estimate_vintage",
+      "reference_answer": "The Q2 2024 advance estimate reported real GDP growth of 2.8% at an annual rate. This is the advance estimate, not a later revised estimate.",
+      "reference_urls": [
+        "https://www.bea.gov/news/2024/gross-domestic-product-second-quarter-2024-advance-estimate"
+      ],
+      "requirements": [
+        "Use the Q2 2024 advance estimate.",
+        "Report real GDP growth of 2.8%, annualized.",
+        "Do not replace the advance estimate with a later revision."
+      ],
+      "case_id": "gdp-2024-q2-ko",
+      "question": "BEA의 2024년 2분기 GDP 속보치 원문을 찾아 미국 실질 GDP 성장률을 알려줘. 속보치인지 수정치인지, 연율인지도 구분해줘.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "sec-bitcoin-2024-01",
+      "category": "false_premise_and_multiple_sources",
+      "reference_answer": "The January 9 post was unauthorized and was not an SEC approval. On January 10 the SEC approved listing and trading of certain spot bitcoin ETP shares. It did not approve or endorse bitcoin itself.",
+      "reference_urls": [
+        "https://www.sec.gov/newsroom/speeches-statements/gensler-x-account",
+        "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"
+      ],
+      "requirements": [
+        "Reject the January 9 post as unauthorized, not an actual approval.",
+        "Distinguish the January 10 listing/trading approval from the false post.",
+        "Clarify that approval of ETP shares is not endorsement of bitcoin.",
+        "Use both official statements to support the timeline."
+      ],
+      "case_id": "sec-bitcoin-2024-01-en",
+      "question": "Did the SEC actually approve spot bitcoin ETPs on January 9, 2024 as its X account claimed? Compare the SEC account-incident statement with its January 10 approval statement. Clarify what was approved and whether bitcoin itself was endorsed.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "sec-bitcoin-2024-01",
+      "category": "false_premise_and_multiple_sources",
+      "reference_answer": "The January 9 post was unauthorized and was not an SEC approval. On January 10 the SEC approved listing and trading of certain spot bitcoin ETP shares. It did not approve or endorse bitcoin itself.",
+      "reference_urls": [
+        "https://www.sec.gov/newsroom/speeches-statements/gensler-x-account",
+        "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"
+      ],
+      "requirements": [
+        "Reject the January 9 post as unauthorized, not an actual approval.",
+        "Distinguish the January 10 listing/trading approval from the false post.",
+        "Clarify that approval of ETP shares is not endorsement of bitcoin.",
+        "Use both official statements to support the timeline."
+      ],
+      "case_id": "sec-bitcoin-2024-01-ko",
+      "question": "2024년 1월 9일 SEC X 계정 게시물처럼 현물 비트코인 ETP가 실제 승인됐어? 계정 침해에 관한 SEC 발표와 1월 10일 승인 성명을 대조하고, 무엇이 승인됐으며 비트코인 자체도 보증한 것인지 구분해줘.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "completed"
+    },
+    {
+      "event_id": "fomc-2024-05",
+      "category": "causal_abstention",
+      "reference_answer": "The FOMC maintained a 5.25%–5.50% target range on May 1, 2024. That policy release alone does not establish the direction, magnitude or causal driver of a bitcoin price move.",
+      "reference_urls": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm"
+      ],
+      "requirements": [
+        "Report a hold at 5.25%–5.50%.",
+        "Do not invent bitcoin prices or assume a direction of movement.",
+        "Separate a policy announcement from proof of a market-price causal effect."
+      ],
+      "case_id": "fomc-2024-05-en",
+      "question": "Why did bitcoin move around May 1, 2024? Find the FOMC release for that day, give its target-rate decision, and assess whether this release alone proves the cause of a bitcoin price move. Do not invent bitcoin prices.",
+      "language": "en",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "insufficient_evidence"
+    },
+    {
+      "event_id": "fomc-2024-05",
+      "category": "causal_abstention",
+      "reference_answer": "The FOMC maintained a 5.25%–5.50% target range on May 1, 2024. That policy release alone does not establish the direction, magnitude or causal driver of a bitcoin price move.",
+      "reference_urls": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm"
+      ],
+      "requirements": [
+        "Report a hold at 5.25%–5.50%.",
+        "Do not invent bitcoin prices or assume a direction of movement.",
+        "Separate a policy announcement from proof of a market-price causal effect."
+      ],
+      "case_id": "fomc-2024-05-ko",
+      "question": "2024년 5월 1일 전후 비트코인 가격이 움직인 원인은 뭐야? 당일 FOMC 발표 원문과 목표금리 결정을 확인하고, 이 발표 하나로 가격 변동의 원인을 입증할 수 있는지 판단해줘. 비트코인 가격은 만들어내지 마.",
+      "language": "ko",
+      "reference_checked_at": "2026-10-16",
+      "expected_status": "insufficient_evidence"
+    }
+  ]
+}
