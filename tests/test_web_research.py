@@ -119,6 +119,9 @@ class WebWorkflowTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(body["tool_choice"], "required")
             self.assertEqual(body["include"], ["web_search_call.action.sources"])
             self.assertEqual(body["max_tool_calls"], 3)
+            self.assertEqual(body["max_output_tokens"], 4096)
+            self.assertIn("language of the user's question", body["instructions"])
+            self.assertNotIn("Write in Korean", body["instructions"])
             self.assertFalse(body["store"])
             self.assertNotIn("text", body)
             self.assertIn("2026-10-16", body["input"])
@@ -138,6 +141,18 @@ class WebWorkflowTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(summarize_runs([record])["estimated_external_llm_api_cost_usd"])
         self.assertNotIn("unit-test-secret", json.dumps(record))
         self.assertNotIn("private reasoning fixture", json.dumps(record))
+
+    async def test_english_model_report_has_no_forced_korean_boilerplate(self):
+        raw = deepcopy(RESPONSE)
+        block = raw["output"][-1]["content"][0]
+        block["text"] = "Confirmed reported facts. Source A.\n\nUncertainty and limits. Source B."
+        for index, annotation in enumerate(block["annotations"]):
+            marker = "Source A." if index == 0 else "Source B."
+            annotation.update(start_index=block["text"].index(marker),
+                              end_index=block["text"].index(marker) + len(marker))
+        record, _ = await self.run_fixture(web_request("Find the official policy decision"), response=raw)
+        self.assertTrue(record["result"]["answer"].startswith("Confirmed reported facts."))
+        self.assertNotIn("웹 조사", record["result"]["answer"])
 
     async def test_prices_and_web_evidence_share_a_report_and_replay_twice_without_network(self):
         record, calls = await self.run_fixture(web_request("BTC 7d 관련 뉴스와 거시 자료를 조사해줘"))
@@ -177,7 +192,7 @@ class WebWorkflowTests(unittest.IsolatedAsyncioTestCase):
     async def test_causal_question_keeps_inference_limit_even_with_cited_news(self):
         record, _ = await self.run_fixture(web_request("왜 BTC 7d 가격이 변했는지 뉴스를 조사해줘"))
         self.assertEqual(record["result"]["status"], "insufficient_evidence")
-        self.assertIn("인과관계를 입증하지 않습니다", record["result"]["answer"])
+        self.assertIn("[web-1]", record["result"]["answer"])
 
     async def test_missing_key_stops_before_any_external_network(self):
         with patch.dict("os.environ", {}, clear=True), patch.object(
@@ -205,7 +220,7 @@ class WebWorkflowTests(unittest.IsolatedAsyncioTestCase):
 
 class WebRequestTests(unittest.TestCase):
     def test_web_requests_require_an_explicit_live_openai_choice(self):
-        for changes in ({}, {"mode": "live"}, {"planner": "openai"}, {"mode": "live", "planner": "ollama"}):
+        for changes in ({"mode": "demo"}, {"planner": "baseline"}, {"planner": "ollama"}):
             with self.subTest(changes=changes), self.assertRaises(ValidationError):
                 ResearchRequest(question="Fed news", web=True, **changes)
         self.assertTrue(web_request().web)
