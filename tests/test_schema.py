@@ -209,6 +209,13 @@ class SchemaTests(unittest.TestCase):
                         {**self.completed, "sources": sources, "source_ids": []}
                     )
 
+    def test_partial_results_require_evidence_and_valid_citations(self):
+        result = ResearchResult.model_validate({**self.completed, "status": "partial"})
+        self.assertEqual(result.status, "partial")
+        for ids in ([], ["missing"]):
+            with self.subTest(ids=ids), self.assertRaises(ValidationError):
+                ResearchResult.model_validate({**self.completed, "status": "partial", "source_ids": ids})
+
     def test_common_configuration_rejects_extra_fields(self):
         for model, data in self.valid_inputs:
             with self.subTest(model=model.__name__):
