@@ -19,7 +19,7 @@ from .llm import ASTRA_MODEL, call_llm, call_openai, openai_output_text, usage_m
 from .records import RecordingTransport, ReplayTransport, RunStore
 from .schema import ResearchPlan, ResearchResult, Source
 from .tools import SYMBOLS, build_bm25, fetch_market_data, load_documents, search_documents
-from .web_research import MAX_WEB_TOOL_CALLS, WEB_PROMPT_VERSION, call_web_research, parse_web_research
+from .web_research import MAX_WEB_OUTPUT_TOKENS, MAX_WEB_TOOL_CALLS, WEB_PROMPT_VERSION, call_web_research, parse_web_research
 
 PACKAGE = Path(__file__).parent
 BINANCE_URL = "https://data-api.binance.vision"
@@ -52,9 +52,9 @@ def planner_schema() -> dict:
 class ResearchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, str_strip_whitespace=True)
     question: str = Field(min_length=1, max_length=2000)
-    mode: Literal["demo", "live"] = "demo"
-    planner: Literal["baseline", "ollama", "openai"] = "baseline"
-    web: bool = False
+    mode: Literal["demo", "live"] = "live"
+    planner: Literal["baseline", "ollama", "openai"] = "openai"
+    web: bool = True
     scenario: Literal["none", "eth_timeout", "all_timeout", "eth_missing",
                       "eth_invalid", "eth_rate_limit"] = "none"
     as_of: AwareDatetime | None = Field(default=None, strict=False)
@@ -142,7 +142,7 @@ async def run_research(
     replay = ReplayTransport(replay_record["http"]) if replay_record else None
     http_events, trace, llm_responses = [], [], []
     documents = ([Source.model_validate_json(json.dumps(row)) for row in replay_record["documents"]]
-                 if replay_record else load_documents(PACKAGE / "data/documents.json"))
+                 if replay_record else [] if request.web else load_documents(PACKAGE / "data/documents.json"))
     record = {
         "format_version": 1, "run_id": str(uuid4()), "started_at": started_at.isoformat(),
         "request": request.model_dump(mode="json"),
@@ -161,6 +161,7 @@ async def run_research(
     if request.web:
         record["metadata"].update(model_role="hosted web researcher; Python handles optional market figures",
                                    web_prompt_version=WEB_PROMPT_VERSION,
+                                   max_web_output_tokens=MAX_WEB_OUTPUT_TOKENS,
                                    max_web_tool_calls=MAX_WEB_TOOL_CALLS)
         record["web_retrieved_at"] = replay_record["web_retrieved_at"] if replay else started_at.isoformat()
     market_inner = demo_transport(request.scenario) if request.mode == "demo" else httpx.AsyncHTTPTransport()
@@ -332,10 +333,8 @@ def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[So
         if web_answer:
             status = "partial" if failures else "completed"
             lines.append(web_answer)
-            lines.append("웹 검색 제공자의 인용이 포함된 조사입니다. 기사 전문 수집·문장별 사실 검증·발행일 검증을 완료했다는 뜻은 아닙니다.")
             if is_causal(request.question):
                 status = "insufficient_evidence"
-                lines.append("기사의 해석과 사건의 동시 발생만으로 가격 변화의 인과관계를 입증하지 않습니다.")
         else:
             status = "partial" if market else "error"
             lines.append("인용 가능한 웹 조사 결과를 얻지 못했습니다. 뉴스·거시경제 결론은 제시하지 않습니다.")
@@ -354,6 +353,14 @@ def render_result(request: ResearchRequest, plan: ResearchPlan, sources: list[So
         status = "partial" if failures else "completed"
     for source in ([] if request.web else docs):
         lines.append(f"[{source.source_id}] {source.content}")
+    if request.web and web_answer:
+        # Keep model prose in the question's language; numerical evidence stays language-neutral.
+        figures = []
+        for source in market:
+            data = json.loads(source.content)
+            figures.append(f"{data['symbol']}: {data['open']} → {data['close']} USDT; {data['display_return_pct']}% "
+                           f"UTC [{data['start_utc']}, {data['end_utc_exclusive']}) [{source.source_id}]")
+        lines = figures + [web_answer]
     return ResearchResult(status=status, answer="\n\n".join(lines), sources=sources,
                           source_ids=[source.source_id for source in sources])
 
@@ -372,5 +379,6 @@ def compare_results(before: dict, after: dict) -> dict:
 
 
 async def replay_run(record: dict, *, store: RunStore | None = None) -> dict:
-    request = ResearchRequest.model_validate_json(json.dumps(record["request"]))
+    # Records from before web research predate the new live/web defaults.
+    request = ResearchRequest.model_validate_json(json.dumps({"web": False, **record["request"]}))
     return await run_research(request, store=store, replay_record=record)
