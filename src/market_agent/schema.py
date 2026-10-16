@@ -110,6 +110,7 @@ class Reflection(Model):
 class ResearchResult(Model):
     status: Literal[
         "completed",
+        "partial",
         "insufficient_evidence",
         "needs_clarification",
         "unsupported",
@@ -142,8 +143,8 @@ class ResearchResult(Model):
         if not cited_id_set.issubset(available_ids_set):
             raise ValueError("every cited source ID must exist in sources")
 
-        if self.status == "completed" and not self.source_ids:
-            raise ValueError("completed results require at least one cited source")
+        if self.status in {"completed", "partial"} and not self.source_ids:
+            raise ValueError("completed and partial results require at least one cited source")
 
         return self
 
