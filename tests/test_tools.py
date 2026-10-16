@@ -87,6 +87,10 @@ class MarketTests(unittest.IsolatedAsyncioTestCase):
 
 
 class DocumentTests(unittest.TestCase):
+    def test_library_ranking_handles_single_document_negative_idf(self):
+        docs = load_documents(Path(__file__).resolve().parents[1] / "src/market_agent/data/documents.json")[:1]
+        self.assertEqual(search_documents("klines", build_bm25(docs), top_k=2), docs)
+
     def test_empty_and_no_overlap_return_no_evidence(self):
         self.assertEqual(search_documents("UTC", build_bm25([]), top_k=2), [])
         self.assertEqual(tokenize("UTC 1d / 완료된 일봉"), ["utc", "1d", "완료된", "일봉"])
