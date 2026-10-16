@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import httpx
 
@@ -29,7 +30,7 @@ class APITests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(content, response.text)
 
     async def test_research_history_and_replay(self):
-        response = await self.client.post("/api/research", json={"question": "BTC ETH 7d", "scenario": "eth_timeout"})
+        response = await self.client.post("/api/research", json={"mode": "demo", "planner": "baseline", "web": False, "question": "BTC ETH 7d", "scenario": "eth_timeout"})
         self.assertEqual(response.status_code, 200)
         record = response.json()
         self.assertEqual(record["result"]["status"], "partial")
@@ -44,19 +45,43 @@ class APITests(unittest.IsolatedAsyncioTestCase):
     async def test_validation_and_replay_mismatch(self):
         for body in [{"question": " "}, {"question": "BTC 7d", "mode": "live", "scenario": "all_timeout"}]:
             self.assertEqual((await self.client.post("/api/research", json=body)).status_code, 422)
-        record = (await self.client.post("/api/research", json={"question": "BTC 7d"})).json()
+        record = (await self.client.post("/api/research", json={"mode": "demo", "planner": "baseline", "web": False, "question": "BTC 7d"})).json()
         record["http"][0]["url"] += "&unexpected=1"
         (self.path / "runs" / f"{record['run_id']}.json").write_text(json.dumps(record))
         response = await self.client.post(f"/api/runs/{record['run_id']}/replay")
         self.assertEqual(response.status_code, 409)
 
-    async def test_evaluation_preserves_full_raw_results(self):
-        response = await self.client.post("/api/evaluate")
+    async def test_live_evaluation_missing_key_is_explicit_and_never_uses_demo(self):
+        with patch.dict("os.environ", {}, clear=True):
+            response = await self.client.post("/api/evaluate")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("OPENAI_API_KEY", response.json()["detail"])
+        self.assertEqual((await self.client.get("/api/runs")).json(), [])
+
+    async def test_status_reports_current_contract_without_exposing_credentials(self):
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "unit-test-secret"}):
+            response = await self.client.get("/api/status")
+        self.assertEqual(response.json()["api_contract"], "research-live-v1")
+        self.assertTrue(response.json()["openai_key_configured"])
+        self.assertNotIn("unit-test-secret", response.text)
+        schema = (await self.client.get("/openapi.json")).json()
+        props = schema["components"]["schemas"]["ResearchRequest"]["properties"]
+        self.assertIn("web", props)
+        self.assertEqual(props["mode"]["default"], "live")
+        self.assertEqual(response.headers["cache-control"], "no-store")
+
+    async def test_live_benchmark_endpoint_preserves_runs_and_review_template(self):
+        from test_web_research import RESPONSE
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "unit-test-secret"}), patch(
+            "market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(
+                lambda request: httpx.Response(200, json=RESPONSE))
+        ):
+            response = await self.client.post("/api/evaluate", json={"limit": 2})
         self.assertEqual(response.status_code, 200)
         report = response.json()
-        self.assertEqual(report["passed"], 20)
-        self.assertEqual(len(report["cases"]), 20)
-        self.assertTrue((self.path / "evaluation.json").exists())
-        self.assertTrue((self.path / "evaluation.md").exists())
-        self.assertEqual(report["dimensions"]["status"], {"passed": 20, "total": 20})
-        self.assertEqual((await self.client.get("/api/runs")).json(), [])
+        self.assertEqual(report["total"], 2)
+        self.assertIsNone(report["quality"]["answer_correct"]["rate_all_cases"])
+        self.assertTrue((self.path / "research-benchmark.reviews.json").exists())
+        self.assertEqual(len((await self.client.get("/api/runs")).json()), 2)
+        info = (await self.client.get("/api/benchmark")).json()
+        self.assertEqual((info["case_count"], info["event_groups"]), (12, 6))
