@@ -6,7 +6,9 @@ Compare BTCUSDT, ETHUSDT, and BNBUSDT over the same completed UTC daily bars. In
 
 **Status: runnable local MVP.** CLI, FastAPI, a build-free JavaScript console, synthetic failure scenarios, atomic run storage, strict HTTP replay, and a 20-case development evaluator are implemented. The default runs offline without an LLM. Optional Ollama and GPT-6 Astra planners and live Binance data use the same workflow. GPT-6 Astra requires OPENAI_API_KEY; its real API comparison has not been run.
 
-The architecture is a fixed research workflow with an optional LLM planner. The model does not autonomously choose tools or run an observe–act loop.
+The price path is a fixed research workflow with an optional LLM planner. An opt-in web mode delegates search/read choices to OpenAI's hosted tool; this application does not implement its own general agent loop.
+
+**News and macro research:** `--mode live --planner openai --web` requests live web research with clickable provider citations, optionally alongside bounded Binance prices. News-only and macro-only questions are accepted. This integration has mock-based tests; a real paid web search has not been run. See [scope, execution and limits](docs/web-research.md).
 
 Independent portfolio project; not affiliated with Binance. No trading or prediction.
 
@@ -60,12 +62,12 @@ Runs are saved under `.market-agent/runs/` (ignored by Git). A global `--data-di
 - Capture `as_of` once. End at its UTC midnight; use `[start, end)` for every symbol.
 - Calculate `(last_close / first_open - 1) * 100` from original decimal strings at 40-digit precision. Store that value separately from two-decimal, half-up display rounding.
 - Reject missing, duplicate, unordered, incomplete, malformed, and invalid-price candles. Keep each symbol's failure and return `partial` when other requested symbols succeed.
-- The bundled corpus contains **three reviewed API-document paraphrases**, not news or a live web search. Document-only results are retrieval evidence and remain `insufficient_evidence`; price movement causes are not established.
+- Default local search covers **three reviewed API-document paraphrases**. Opt-in `--web` uses OpenAI hosted search for news, articles and macro releases. Provider URL citations are metadata; the app does not download article full text or verify every claim. Price movement causes are not established.
 - Market collection runs once per symbol. At most one additional document search is allowed. A collection round is not an HTTP-call count. There are no automatic HTTP retries. HTTP 418/429 stops remaining market requests in that run.
 
 ## Verification and limits
 
-The current revision passes **64 unit/integration tests**. The initial baseline passed **20/20 synthetic development smoke cases**; after fixing the planner contract, a real Qwen run also passed **20/20**, with 15 actual model requests. This is a bounded application check, not general model accuracy. The smoke set was used during implementation and is not held out. Its rational numerical expectations are authored separately from the production calculator. A mutation check confirms that a wrong return is detected.
+The current revision passes **79 unit/integration tests**. The initial baseline passed **20/20 synthetic development smoke cases**; after fixing the planner contract, a real Qwen run also passed **20/20**, with 15 actual model requests. This is a bounded application check, not general model accuracy. The smoke set was used during implementation and is not held out. Its rational numerical expectations are authored separately from the production calculator. A mutation check confirms that a wrong return is detected.
 
 On 2026-10-16 KST, one live Binance research request and one real `qwen3:8b` planning request also completed. These are connection checks, not model-quality or live-market accuracy benchmarks. Full records and environment details are in [validation](docs/validation.md).
 
@@ -75,6 +77,7 @@ There is no public deployment, user-demand validation, held-out model evaluation
 
 ## Code and authorship
 
+- [web_research.py](src/market_agent/web_research.py): hosted news/macro research, provider citations, and explicit evidence limits.
 - [runtime.py](src/market_agent/runtime.py): bounded request handling, optional model plan, partial failure, report rendering.
 - [tools.py](src/market_agent/tools.py): Decimal calculations, strict candle checks, small-corpus BM25.
 - [records.py](src/market_agent/records.py): atomic JSON storage and strict HTTP recording/replay.
