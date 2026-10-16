@@ -1,56 +1,32 @@
-# OpenAI API 연결과 실행
+# OpenAI 연결과 실제 조사 실행
 
-가격 경로는 **선택형 LLM 계획 생성이 붙은 고정 연구 워크플로우**다. 뉴스·기사·거시경제를 외부 검색하려면 별도의 [웹 조사 모드](web-research.md)를 사용한다. 웹 조사 모드는 OpenAI의 hosted search/read를 사용하며 앱 자체의 범용 자율 에이전트 루프는 없다. API 통신 코드는 이미 [llm.py](../src/market_agent/llm.py)에 있고, 키를 읽어 인증 헤더를 만드는 곳은 [runtime.py](../src/market_agent/runtime.py)다.
+**현재 기본값은 live + OpenAI + 웹 조사다.** 일반 실행과 evaluate는 합성 시세를 사용하지 않는다. 키는 실행 프로세스가 읽을 수 있어야 한다.
 
-## 최초 설치
+## 설치와 키 입력
 
-저장소 루트에서 Python 3.10 이상으로 실행한다. Python이 여러 개 설치돼 있으면 의존성을 설치한 가상환경의 Python을 일관되게 사용한다.
+저장소 루트에서 Python 3.10 이상을 사용한다. 현재 검증 환경은 Python 3.13이다.
 
-```sh
+```zsh
 python3 -m venv .venv
 .venv/bin/python -m pip install .
-```
-
-## 키 입력 — macOS zsh
-
-다음 명령을 본인 터미널에서 실행하고 프롬프트에 키를 붙여 넣는다. `read -s`가 입력을 숨기므로 실제 키를 명령문이나 셸 히스토리에 직접 적을 필요가 없다.
-
-```sh
 read -rs "OPENAI_API_KEY?OpenAI API key: "
 export OPENAI_API_KEY
-```
-
-OpenAI 공식 문서도 `OPENAI_API_KEY` 환경변수로 키를 전달한다. 위 `read`는 값을 숨겨 입력하기 위한 zsh 명령이다. [공식 API quickstart](https://developers.openai.com/api/docs/quickstart)
-
-## 같은 터미널에서 실행
-
-실제 Binance 조회와 GPT-6 Astra 계획 생성:
-
-```sh
-PYTHONPATH=src .venv/bin/python -m market_agent research 'BTC ETH BNB 7d' --mode live --planner openai
-```
-
-웹 콘솔:
-
-```sh
 PYTHONPATH=src .venv/bin/python -m market_agent serve
 ```
 
-`http://127.0.0.1:8000`에서 Planner를 `GPT-6 Astra · paid API`로 선택한다. 이미 실행 중인 서버에는 나중에 설정한 환경변수가 전달되지 않으므로 기존 서버를 종료한 뒤 키를 설정한 터미널에서 다시 시작한다.
+`read -s`가 입력을 숨긴다. 키를 채팅·명령문·커밋에 직접 적지 않는다. 이미 서버가 켜져 있으면 종료한 뒤 키를 설정한 같은 터미널에서 다시 시작한다. 환경변수는 다른 터미널이나 기존 프로세스에 자동 전달되지 않는다. [OpenAI 공식 quickstart](https://developers.openai.com/api/docs/quickstart)
 
-같은 합성 시장 자료로 모델을 비교하려면:
+`.env` 자동 로드는 하지 않는다. 종료 후 현재 터미널의 키를 해제하려면 `unset OPENAI_API_KEY`를 실행한다. `/api/status`는 키 설정 여부만 반환한다.
 
-```sh
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner ollama --output .market-agent/qwen.json
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner openai --output .market-agent/astra.json
-```
-
-각 명령은 원시 JSON과 같은 이름의 Markdown 요약을 만든다. 이 비교에서 시장 자료는 합성이지만 모델 요청은 실제 호출이다. OpenAI API 이용료가 발생한다.
-
-작업 후 현재 터미널의 키를 해제하려면:
+## 실제 뉴스·거시 조사
 
 ```sh
-unset OPENAI_API_KEY
+PYTHONPATH=src .venv/bin/python -m market_agent research 'Find recent bitcoin news and official US macro releases.'
+PYTHONPATH=src .venv/bin/python -m market_agent evaluate --limit 2 --output .market-agent/pilot.json
 ```
 
-키 값은 채팅·README·커밋에 넣지 않는다. 현재 프로그램은 `.env`를 자동으로 읽지 않는다. API 키가 없으면 호출 전에 종료한다. Astra의 실제 계정 접근과 성능은 아직 검증하지 않았으며, 현재 연결 코드는 모의 응답으로 검사했다.
+evaluate의 2개 질문은 첫 한·영 쌍만 실행한다. 전체 12개는 `--limit 12`다. 모델·검색 비용이 발생하며 키가 없으면 시작 전에 종료한다. [평가셋 선정과 채점 기준](live-research-evaluation.md)을 먼저 읽는다.
+
+웹 조사가 필요 없는 가격 계획만 확인하려면 `--no-web`을 붙인다. 예: `research 'BTC ETH BNB 7d' --no-web --planner ollama`. Qwen의 계획 추출과 Astra의 웹 조사 보고서는 다른 과제이므로 점수를 직접 비교하지 않는다.
+
+현재 실제 Astra 접근·검색·답변 품질은 미검증이다. 연결 코드의 모의 응답 테스트와 실제 모델 점수를 혼동하지 않는다. [서버 버전 불일치 오류](integration-status.md), [웹 조사와 예산](web-research.md).
