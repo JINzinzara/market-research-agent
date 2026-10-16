@@ -1,5 +1,7 @@
 # 실행 기록·재현·평가
 
+현재 live 연구 평가와 기본 실행은 [새 평가 기준](live-research-evaluation.md)을 따른다. 아래 합성 데이터·계획 추출 측정은 보존한 개발 기록이며 `regression`으로만 실행한다.
+
 **HTTP 응답과 오류를 고정해 현재 조사 코드를 다시 실행한다.** 기록 조회와 재현은 별도 기능이다. 20개 개발 사례는 구현돼 있으며 실제 모델 품질 평가가 아니다.
 
 ## 기록
@@ -33,7 +35,7 @@
 평가 JSON은 사례별 입력·기대값·오류 목록·전체 실행 기록과 상태별 분모를 포함한다. 평가셋을 보며 구현했으므로 개발셋이다. 링크 존재 검사는 의미적 근거 적합성 점수가 아니며, 실모델·실시장 품질은 이 평가에 들어 있지 않다.
 
 ```sh
-PYTHONPATH=src python3 -m market_agent evaluate --output .market-agent/evaluation.json
+PYTHONPATH=src python3 -m market_agent regression --output .market-agent/evaluation.json
 ```
 
 ## 남은 비교
