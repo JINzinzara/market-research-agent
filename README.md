@@ -1,121 +1,81 @@
-# Market Research Agent — Reliability Lab
+# Market Research Agent — live research and evaluation
 
-A small full-stack research tool that makes market calculations inspectable and failures reproducible.
+Research financial news and macro releases with cited web sources, optionally alongside validated Binance prices. Inspect the answer, sources, failures, usage and replay record.
 
-Compare BTCUSDT, ETHUSDT, and BNBUSDT over the same completed UTC daily bars. Inspect the original prices, citations, tool errors, and execution record. Run the current workflow again using recorded HTTP responses, including failures.
+**Current phase: live research.** Normal CLI/API/browser requests default to live + OpenAI GPT-6 Astra + hosted web search. The 20-case synthetic baseline is retained only as an explicit regression tool. Real-model answer accuracy has not been measured: the current server has no OpenAI API key.
 
-**Status: runnable local MVP.** CLI, FastAPI, a build-free JavaScript console, synthetic failure scenarios, atomic run storage, strict HTTP replay, and a 20-case development evaluator are implemented. The default runs offline without an LLM. Optional Ollama and GPT-6 Astra planners and live Binance data use the same workflow. GPT-6 Astra requires OPENAI_API_KEY; its real API comparison has not been run.
+The app uses a bounded Python workflow and OpenAI-hosted search/read decisions. It does not implement a general agent loop. Independent portfolio project; not affiliated with Binance.
 
-The price path is a fixed research workflow with an optional LLM planner. An opt-in web mode delegates search/read choices to OpenAI's hosted tool; this application does not implement its own general agent loop.
+## Start
 
-**News and macro research:** `--mode live --planner openai --web` requests live web research with clickable provider citations, optionally alongside bounded Binance prices. News-only and macro-only questions are accepted. This integration has mock-based tests; a real paid web search has not been run. See [scope, execution and limits](docs/web-research.md).
+Python 3.10+ is declared; current verification uses Python 3.13. From this checkout:
 
-Independent portfolio project; not affiliated with Binance. No trading or prediction.
-
-## Run locally
-
-Python 3.10+ is declared; verification used Python 3.13.9. From this repository:
-
-```sh
+```zsh
 python3 -m venv .venv
 .venv/bin/python -m pip install .
+read -rs "OPENAI_API_KEY?OpenAI API key: "
+export OPENAI_API_KEY
 PYTHONPATH=src .venv/bin/python -m market_agent serve
 ```
 
-Open [the local console](http://127.0.0.1:8000). Installation needs package access; default demo execution uses no external network. The server binds to loopback and has no multi-user authentication. It is not a public deployment.
+Open [the console](http://127.0.0.1:8000). Start the server in the same terminal where you exported the key. An existing server does not inherit later environment changes. Use `PYTHONPATH=src` after source edits; a normal package installation copies the package. API requests incur model and search charges. The server binds to loopback; public multi-user deployment is outside this version.
 
-The console provides research, source inspection, run history, replay, evaluation, and JSON export. Select **ETH timeout** to see a partial result, expand **Inspect execution**, and choose **Replay recorded responses**. Data source and planner are separate controls: synthetic data with an Ollama planner still makes a local model call.
+The UI checks `/api/status` before research/evaluation. A stale backend contract produces a restart instruction. Assets revalidate their cache. [Connection status and the old `extra_forbidden: web` error](docs/integration-status.md).
 
-![Development evaluation console](docs/screenshots/evaluation.jpg)
-
-## CLI
-
-Use `PYTHONPATH=src` to run this checkout after edits. Ordinary installation copies the package; reinstall to update the installed copy. The installed `market-agent` entry point provides the same commands.
+## Research
 
 ```sh
-PYTHONPATH=src python3 -m market_agent research 'BTC ETH BNB 7d'
-PYTHONPATH=src python3 -m market_agent research 'BTC ETH BNB 7d' --scenario eth_timeout
-PYTHONPATH=src python3 -m market_agent replay RUN_ID_FROM_PREVIOUS_COMMAND
-PYTHONPATH=src python3 -m market_agent evaluate --output .market-agent/evaluation.json
-PYTHONPATH=src python3 -m unittest discover -s tests -v
+PYTHONPATH=src .venv/bin/python -m market_agent research 'Find recent bitcoin news and official US inflation releases; separate reported facts from interpretations.'
+PYTHONPATH=src .venv/bin/python -m market_agent research '최근 Fed 금리 결정과 BLS 물가 발표를 공식 자료로 조사해줘.'
 ```
 
-Live data needs access to Binance's public market-data endpoint; no account or API key is used:
+The model follows the question's language, or an explicit requested output language. The interface and technical error messages are still largely Korean. Provider URL annotations become clickable citations. Citation metadata is not an article excerpt; full article crawling, independent claim verification and automatic publication-date filtering are not implemented.
+
+A bounded price-only request uses `--no-web`. Supported prices are BTCUSDT, ETHUSDT and BNBUSDT over one or seven completed UTC daily candles:
 
 ```sh
-PYTHONPATH=src python3 -m market_agent research 'BTC ETH BNB 7d' --mode live
+PYTHONPATH=src .venv/bin/python -m market_agent research 'BTC ETH BNB 7d' --no-web --planner ollama
+PYTHONPATH=src .venv/bin/python -m market_agent replay RUN_ID
 ```
 
-For the local planner, first run Ollama and install `qwen3:8b`, then:
+Prices come from Binance, not a language model. Python computes `(last_close / first_open - 1) * 100` using original decimal strings and 40-digit precision. Windows use the same `[start, end)` UTC interval. Malformed/missing/incomplete candles fail; successful symbols survive other failures. Price co-movement and cited articles do not establish causality.
+
+## Evaluate real research
 
 ```sh
-PYTHONPATH=src python3 -m market_agent research 'BTC 7d' --planner ollama
+PYTHONPATH=src .venv/bin/python -m market_agent evaluate --limit 2 --output .market-agent/pilot-two.json
+PYTHONPATH=src .venv/bin/python -m market_agent evaluate --limit 12 --output .market-agent/pilot-full.json
 ```
 
-Ollama is called at `http://127.0.0.1:11434`. Its JSON plan must agree with the bounded request contract. It does not generate prices or the numerical report. This is Python orchestration, not native model tool calling or an MCP server. The baseline parser is deliberately conservative; arbitrary natural-language requests are not supported.
+This performs actual Astra web research. The authored pilot has 12 Korean/English questions in **six event groups**, based on original Fed, BLS, BEA and SEC releases. It covers units, reference periods, initial estimates versus revisions, misinformation timelines and causal abstention. It is not held out and does not measure breaking-news freshness. [Selection rationale, external alternatives and grading rubric](docs/live-research-evaluation.md).
 
-Runs are saved under `.market-agent/runs/` (ignored by Git). A global `--data-dir PATH` option goes before the subcommand. `--as-of` accepts a timezone-aware ISO timestamp; demo data is fixed to 2026-10-16 UTC. Live mode defaults to the actual run start time.
+Reports include operational completion, reference URL coverage, raw answers and sources, model tokens, elapsed time and API cost limits. **URL coverage is not answer accuracy.** Semantic labels remain `null` until reviewed. Each run is saved and the aggregate JSON/Markdown is checkpointed after every question. Provider access/rate-limit errors stop the remaining batch.
 
-## Evidence contract
-
-- `24h` means **one completed UTC daily candle**, and `7d` means seven. Neither is a rolling window. Explicit rolling-window and arbitrary-date requests require clarification.
-- Capture `as_of` once. End at its UTC midnight; use `[start, end)` for every symbol.
-- Calculate `(last_close / first_open - 1) * 100` from original decimal strings at 40-digit precision. Store that value separately from two-decimal, half-up display rounding.
-- Reject missing, duplicate, unordered, incomplete, malformed, and invalid-price candles. Keep each symbol's failure and return `partial` when other requested symbols succeed.
-- Default local search covers **three reviewed API-document paraphrases**. Opt-in `--web` uses OpenAI hosted search for news, articles and macro releases. Provider URL citations are metadata; the app does not download article full text or verify every claim. Price movement causes are not established.
-- Market collection runs once per symbol. At most one additional document search is allowed. A collection round is not an HTTP-call count. There are no automatic HTTP retries. HTTP 418/429 stops remaining market requests in that run.
-
-## Verification and limits
-
-The current revision passes **79 unit/integration tests**. The initial baseline passed **20/20 synthetic development smoke cases**; after fixing the planner contract, a real Qwen run also passed **20/20**, with 15 actual model requests. This is a bounded application check, not general model accuracy. The smoke set was used during implementation and is not held out. Its rational numerical expectations are authored separately from the production calculator. A mutation check confirms that a wrong return is detected.
-
-On 2026-10-16 KST, one live Binance research request and one real `qwen3:8b` planning request also completed. These are connection checks, not model-quality or live-market accuracy benchmarks. Full records and environment details are in [validation](docs/validation.md).
-
-Replay runs the current workflow with frozen requests/responses and the original corpus snapshot. Method, URL, body, order, missing calls, and unused responses are checked; there is no network fallback. The result comparison excludes market retrieval timestamps and includes source contents. Model responses are frozen too. The CLI evaluation now runs a selected live model against the same synthetic market fixtures; strict replay still freezes model responses as well.
-
-There is no public deployment, user-demand validation, held-out model evaluation, Astra-vs-Qwen result, or demonstrated agent-vs-baseline improvement. A real user-triggered planner validation failure and its correction are documented. Those are the next portfolio evidence, not claims this MVP makes.
-
-## Code and authorship
-
-- [web_research.py](src/market_agent/web_research.py): hosted news/macro research, provider citations, and explicit evidence limits.
-- [runtime.py](src/market_agent/runtime.py): bounded request handling, optional model plan, partial failure, report rendering.
-- [tools.py](src/market_agent/tools.py): Decimal calculations, strict candle checks, small-corpus BM25.
-- [records.py](src/market_agent/records.py): atomic JSON storage and strict HTTP recording/replay.
-- [evaluate.py](src/market_agent/evaluate.py): independent expectations and raw development results.
-- [api.py](src/market_agent/api.py), [web](src/market_agent/web): shared backend and browser console.
-- [llm.py](src/market_agent/llm.py), [schema.py](src/market_agent/schema.py): existing transport and validated research contracts.
-
-The first implementation of the new runtime, tools, console, and tests was AI-assisted. Existing model-call code was preserved; schemas and schema tests originated from the owner's repository and were extended. Ownership, provenance, and the next learning tasks are recorded in [development notes](docs/development.md). Do not present generated code as independently authored work.
-
-[Product contract](docs/product-spec.md) · [Architecture](docs/implementation-plan.md) · [Replay and evaluation](docs/evaluation.md) · [Validation](docs/validation.md)
-
-## Model evaluation and the planner fix
-
-[Metrics, measured Qwen results, and Astra comparison procedure](docs/metrics-and-model-comparison.md) explains what the scores do and do not measure. The original research/message conflict is fixed in the generation schema and prompt; Pydantic validation is preserved. Equivalent symbol orders are accepted.
-
-Every evaluation writes a raw JSON file and a Markdown companion. Run from an environment with the dependencies installed:
+The companion `.reviews.json` binds human labels to the report hash and run IDs. Fill reviewer, evidence-based notes and the four boolean labels, then:
 
 ```sh
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner baseline --output .market-agent/baseline.json
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner ollama --output .market-agent/qwen.json
+PYTHONPATH=src .venv/bin/python -m market_agent score .market-agent/pilot-full.json .market-agent/pilot-full.reviews.json --output .market-agent/pilot-scored.json
 ```
 
-For Astra, enter the key privately in your macOS zsh terminal:
+The full-set accuracy stays unknown until all selected cases are executed and reviewed. Reviewed reports cannot be overwritten by another benchmark run. Optional `--repeats 3` repeats the selected questions; repeated and paired questions are correlated, not extra independent events. Qwen has no shared web-search integration yet, so these are not a fair Astra-versus-Qwen research comparison.
+
+## Verification and retained regression
+
+**90 unit/integration tests pass.** They test the implementation with fixtures, not live-model quality. The archived baseline still passes 20/20 development cases:
 
 ```sh
-read -rs "OPENAI_API_KEY?OpenAI API key: "
-export OPENAI_API_KEY
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
+PYTHONPATH=src .venv/bin/python -m market_agent regression --output .market-agent/regression.json
 ```
 
-The key is hidden while typing. Run the following commands in that same terminal after installing the project environment:
+Local archived document search now uses **NLTK `wordpunct_tokenize` and `rank_bm25.BM25Okapi`**, rather than an in-house tokenizer/BM25 formula. This is separate from hosted live web search. LangChain wrappers do not make remote searches faster by themselves. [Retrieval and orchestration decision](docs/02-tools.md).
 
-```sh
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner openai --output .market-agent/astra.json
-PYTHONPATH=src .venv/bin/python -m market_agent research 'BTC ETH BNB 7d' --mode live --planner openai
-```
+Web output is capped at **4,096 generated tokens**, including non-visible output. This is an initial application budget, not Astra's 128,000-token model limit or an experimentally optimal setting. [Token and tool budgets](docs/web-research.md).
 
-The web console also offers OpenAI. Start its server from the terminal where the environment variable is set; setting it in another shell does not change an already running server. API calls incur API usage charges. The application never writes authentication headers into run records.
+[Product contract](docs/product-spec.md) · [Architecture](docs/implementation-plan.md) · [Historical Qwen measurements](docs/metrics-and-model-comparison.md) · [Initial validation archive](docs/validation.md)
 
-Astra uses Responses structured output, `reasoning.effort=low`, and `max_output_tokens=1024`. These are initial integration settings, not measured optimal values. Incomplete responses fail and retain reported usage. Cost is a dated Standard text estimate using reported cached reads; cache-write premiums, other fees, tax, and operating cost are excluded. The OpenAI path was tested with mocked responses; real model access is unverified until a key is configured.
+## Provenance and storage
 
-[OpenAI key setup and execution guide](docs/openai-setup.md)
+The new workflow, console, evaluation harness and tests are AI-assisted. Existing model-call and schema work originated in the owner's repository. [Development provenance](docs/development.md).
+
+Run records live in `.market-agent/`, ignored by Git. Headers and reasoning text are excluded, but questions and observable answers remain in local records. Replay consumes frozen HTTP responses with exact method/URL/body/order matching and no network fallback. A matching replay proves repeatability of the recorded workflow, not current article availability or factual truth.
