@@ -99,7 +99,8 @@ async def evaluate(planner: str = "baseline") -> dict:
     results = []
     started = perf_counter()
     for case in cases:
-        request = ResearchRequest(question=case["question"], scenario=case.get("scenario", "none"), planner=planner)
+        request = ResearchRequest(question=case["question"], scenario=case.get("scenario", "none"),
+                                  mode="demo", web=False, planner=planner)
         record = await run_research(request)
         checks = case_checks(case, record)
         errors = [check["failure_reason"] for check in checks if not check["passed"]]
