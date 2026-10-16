@@ -53,7 +53,7 @@ class OpenAITests(unittest.IsolatedAsyncioTestCase):
         with patch.dict("os.environ", {"OPENAI_API_KEY": "unit-test-secret"}), patch(
             "market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(handler)
         ):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="openai"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="openai"))
         self.assertEqual(record["result"]["status"], "completed")
         self.assertEqual(record["metadata"]["model"], "gpt-6-astra")
         self.assertNotIn("unit-test-secret", json.dumps(record))
@@ -72,7 +72,7 @@ class OpenAITests(unittest.IsolatedAsyncioTestCase):
             "market_agent.runtime.httpx.AsyncHTTPTransport", return_value=httpx.MockTransport(
                 lambda request: httpx.Response(200, json=response))
         ):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="openai"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="openai"))
         self.assertEqual(record["result"]["status"], "error")
         self.assertEqual(record["metrics"]["http_calls"], 1)
         self.assertEqual(record["metrics"]["usage"][0]["output_tokens"], 50)
@@ -81,7 +81,7 @@ class OpenAITests(unittest.IsolatedAsyncioTestCase):
         with patch.dict("os.environ", {}, clear=True), patch.object(
             httpx.AsyncHTTPTransport, "handle_async_request", side_effect=AssertionError("no network")
         ):
-            record = await run_research(ResearchRequest(question="BTC 7d", planner="openai"))
+            record = await run_research(ResearchRequest(mode="demo", web=False, question="BTC 7d", planner="openai"))
             self.assertEqual(record["result"]["status"], "error")
             self.assertEqual(record["metrics"]["http_calls"], 0)
             with self.assertRaisesRegex(ValueError, "OPENAI_API_KEY"):
