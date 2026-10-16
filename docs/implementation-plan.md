@@ -1,5 +1,7 @@
 # 구현 구조와 다음 단계
 
+현재 live 연구 평가와 기본 실행은 [새 평가 기준](live-research-evaluation.md)을 따른다. 아래 합성 데이터·계획 추출 측정은 보존한 개발 기록이며 `regression`으로만 실행한다.
+
 **첫 버전은 고정 Python 흐름 하나에 CLI·API·웹 콘솔·재현·평가를 연결했다.** LangGraph·React·MCP 없이 현재 필요한 경계를 구현했다.
 
 ```text
