@@ -80,6 +80,22 @@ class ReplayTransport(httpx.AsyncBaseTransport):
             raise ReplayMismatch(f"{len(self.tape) - self.position} recorded HTTP calls were unused")
 
 
+def write_json_atomic(destination: Path, data: dict) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=destination.parent,
+                                         suffix=".tmp", delete=False) as handle:
+            temporary = Path(handle.name)
+            json.dump(data, handle, ensure_ascii=False, indent=2, allow_nan=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, destination)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 class RunStore:
     def __init__(self, directory: Path):
         self.directory = directory
@@ -90,20 +106,7 @@ class RunStore:
         return self.directory / f"{run_id}.json"
 
     def save(self, record: dict) -> None:
-        destination = self.path(record["run_id"])
-        self.directory.mkdir(parents=True, exist_ok=True)
-        temporary = None
-        try:
-            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=self.directory,
-                                             suffix=".tmp", delete=False) as handle:
-                temporary = Path(handle.name)
-                json.dump(record, handle, ensure_ascii=False, indent=2, allow_nan=False)
-                handle.flush()
-                os.fsync(handle.fileno())
-            os.replace(temporary, destination)
-        finally:
-            if temporary is not None:
-                temporary.unlink(missing_ok=True)
+        write_json_atomic(self.path(record["run_id"]), record)
 
     def get(self, run_id: str) -> dict:
         record = json.loads(self.path(run_id).read_text(encoding="utf-8"))
