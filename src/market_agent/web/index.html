@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Market Research Agent · Reliability Lab</title>
-  <link rel="stylesheet" href="/app.css">
-  <script src="/app.js" defer></script>
+  <link rel="stylesheet" href="/app.css?v=web-research-1">
+  <script src="/app.js?v=web-research-1" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -18,17 +18,18 @@
     <div class="sidebar-bottom"><span class="dot"></span> Local workspace<small>Python workflow · v0.1.0<br>Independent portfolio project<br>Not affiliated with Binance</small><a href="/docs" target="_blank" rel="noopener">API reference ↗</a></div>
   </aside>
   <main>
-    <header class="topbar"><span id="breadcrumb">WORKSPACE / RESEARCH</span><span class="outline-label">BTC · ETH · BNB <span class="dot"></span> SPOT ONLY</span></header>
+    <header class="topbar"><span id="breadcrumb">WORKSPACE / RESEARCH</span><span class="outline-label">PRICES <span class="dot"></span> NEWS <span class="dot"></span> MACRO</span></header>
     <section id="research-view">
-      <div class="intro"><div class="eyebrow">EVIDENCE FIRST, ALWAYS.</div><h1>Market research.<br><span>Show your work.</span></h1><p>같은 UTC 구간으로 비교하고, 숫자의 근거와 확인하지 못한 부분을 함께 봅니다.</p></div>
+      <div class="intro"><div class="eyebrow">EVIDENCE FIRST, ALWAYS.</div><h1>Market research.<br><span>Show your work.</span></h1><p>가격 비교와 뉴스·거시경제 조사. 숫자와 기사의 출처, 확인하지 못한 부분을 함께 봅니다.</p></div>
       <form id="research-form" class="panel composer">
         <div class="panel-heading"><h2>What would you like to investigate?</h2><span class="subtle">01 / REQUEST</span></div>
         <label class="sr-only" for="question">Research question</label>
         <textarea id="question" required maxlength="2000" rows="2">BTCUSDT, ETHUSDT, BNBUSDT의 완료된 UTC 7일 변화를 비교해줘.</textarea>
-        <div class="presets"><button type="button" data-question="BTCUSDT, ETHUSDT, BNBUSDT의 완료된 UTC 7일 변화를 비교해줘.">7-day comparison ↗</button><button type="button" data-question="BTC 완료된 UTC 일봉 1개">One completed day ↗</button><button type="button" data-question="왜 비트코인은 7일 동안 상승했어?">Check a causal claim ↗</button></div>
+        <div class="presets"><button type="button" data-question="BTCUSDT, ETHUSDT, BNBUSDT의 완료된 UTC 7일 변화를 비교해줘.">7-day comparison ↗</button><button type="button" data-question="BTC 완료된 UTC 일봉 1개">One completed day ↗</button><button type="button" data-web="true" data-question="비트코인 최근 7일 관련 뉴스와 미국 금리·물가 발표를 조사해줘. 공식 거시 자료와 기사 해석을 구분해줘.">News & macro ↗</button><button type="button" data-web="true" data-question="최근 Fed 금리 결정과 BLS 물가 발표를 공식 자료로 조사해줘.">Official macro releases ↗</button></div>
+        <label class="web-option"><input type="checkbox" id="web"> Search web news & macro · OpenAI paid API</label>
         <div class="controls">
-          <label>DATA SOURCE<select id="mode"><option value="demo">Synthetic market data</option><option value="live">Binance · live API</option></select></label>
-          <label>PLANNER<select id="planner"><option value="baseline">Fixed baseline · no LLM</option><option value="ollama">Ollama · qwen3:8b</option><option value="openai">GPT-6 Astra · paid API</option></select></label>
+          <label>PRICE DATA<select id="mode"><option value="demo">Synthetic market data</option><option value="live">Binance · live API</option></select></label>
+          <label>MODEL<select id="planner"><option value="baseline">Fixed baseline · no LLM</option><option value="ollama">Ollama · qwen3:8b</option><option value="openai">GPT-6 Astra · paid API</option></select></label>
           <label>FAILURE SCENARIO<select id="scenario"><option value="none">Normal execution</option><option value="eth_timeout">ETH timeout</option><option value="eth_missing">ETH missing candle</option><option value="eth_invalid">ETH invalid price</option><option value="eth_rate_limit">ETH rate limit (429)</option><option value="all_timeout">All symbols timeout</option></select></label>
           <button type="submit" class="primary" id="run-button">Run research <span>↗</span></button>
         </div>
