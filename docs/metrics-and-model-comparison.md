@@ -1,5 +1,7 @@
 # 검증 지표·모델 비교·ValidationError
 
+현재 live 연구 평가와 기본 실행은 [새 평가 기준](live-research-evaluation.md)을 따른다. 아래 합성 데이터·계획 추출 측정은 보존한 개발 기록이며 `regression`으로만 실행한다.
+
 작성일: 2026-10-16 KST. **현재 측정은 작은 개발셋의 애플리케이션 계약 검사다. 일반적인 에이전트 품질 점수는 아니다.** 실제 Qwen 평가와 실패 수정 기록을 추가했고, Astra API 경로·평가 명령은 준비했으나 실제 비교는 API 키 설정 전이라 실행하지 않았다.
 
 ## 어떤 검증을 하는가
@@ -7,7 +9,7 @@
 - **정규식:** 기본 요청에서 지원 종목·기간·금지 범위를 해석한다. 정답 채점기나 근거 적합성 평가기가 아니다.
 - **생성용 JSON Schema:** 모델에 허용된 필드·자료형·열거값을 전달한다. 연구 분기에서는 `action=research`, `message=null`을 명시한다.
 - **Pydantic:** 실제 응답을 파싱하고 필드 간 업무 규칙, 중복 종목, 결과 상태와 인용 ID를 검사한다. Python `model_validator`의 모든 조건이 자동으로 JSON Schema에 옮겨지는 것은 아니다.
-- **unittest:** 위 구현과 HTTP·API·재현·실패 처리의 회귀 검사를 실행한다. 현재 79개가 통과했다. 이 중 15개는 웹 조사 연결의 합성 응답 테스트이며, 실제 검색 품질 점수가 아니다. 기존 원격의 소스 import 경로 회귀 검사도 보존했다. 테스트 수는 모델이 맞힌 질문 수와 다르다.
+- **unittest:** 위 구현과 HTTP·API·재현·실패 처리의 회귀 검사를 실행한다. 현재 90개가 통과했다. 연결과 평가 실행기의 모의 응답 테스트를 포함하며, 실제 검색 품질 점수가 아니다. 기존 원격의 소스 import 경로 회귀 검사도 보존했다. 테스트 수는 모델이 맞힌 질문 수와 다르다.
 - **개발용 평가기:** 고정 입력의 기대 상태·종목 집합·수익률·호출 수·오류 보존을 비교한다. 모델을 사용하는 평가에서는 출력 유효성·요청 일치도도 별도로 센다. 수익률 정답은 생산 계산 함수를 다시 호출하지 않고 별도 유리수로 작성했다.
 
 BM25는 문서 검색의 순위 점수다. 확률이나 정답률이 아니며 질의·문서 집합에 따라 달라지므로 에이전트 품질 점수로 사용하지 않는다. 검색 품질을 평가하려면 질의별 정답 문서를 먼저 정하고 Recall@k·순위 지표 등을 별도로 측정해야 한다. 현재 그러한 정답 문서 평가셋이나 의미적 인용 적합성 점수는 없다.
@@ -61,9 +63,9 @@ BM25는 문서 검색의 순위 점수다. 확률이나 정답률이 아니며 �
 키를 본인 터미널의 `OPENAI_API_KEY`로 설정한 뒤, 같은 프로젝트·같은 의존성 환경에서 실행한다. 키를 채팅·README·커밋에 넣지 않는다.
 
 ```sh
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner baseline --output .market-agent/baseline.json
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner ollama --output .market-agent/qwen.json
-PYTHONPATH=src .venv/bin/python -m market_agent evaluate --planner openai --output .market-agent/astra.json
+PYTHONPATH=src .venv/bin/python -m market_agent regression --planner baseline --output .market-agent/baseline.json
+PYTHONPATH=src .venv/bin/python -m market_agent regression --planner ollama --output .market-agent/qwen.json
+PYTHONPATH=src .venv/bin/python -m market_agent regression --planner openai --output .market-agent/astra.json
 ```
 
 각 JSON 옆에 Markdown 요약을 생성한다. 서버에서 사용하려면 같은 키가 설정된 터미널에서 서버를 시작해야 한다. 다른 셸에 export해도 실행 중인 서버의 환경변수는 바뀌지 않는다.
