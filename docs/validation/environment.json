@@ -1,0 +1,11 @@
+{
+  "python": "3.13.9",
+  "system": "Darwin",
+  "packages": {
+    "httpx": "0.28.1",
+    "pydantic": "2.13.2",
+    "fastapi": "0.142.1",
+    "uvicorn": "0.54.0",
+    "setuptools": "82.0.1"
+  }
+}
