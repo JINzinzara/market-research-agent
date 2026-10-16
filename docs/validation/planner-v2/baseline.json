@@ -1,0 +1,3933 @@
+{
+  "format_version": 1,
+  "evaluated_at": "2026-10-16T02:14:22.104988+00:00",
+  "suite": "development-smoke-v1",
+  "mode": "synthetic demo / baseline planner",
+  "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+  "dataset_sha256": "7578f59668363ae9b7b6deac019d7c109db58ec9fdb15de82cb11abc995d9a5b",
+  "total": 20,
+  "passed": 20,
+  "pass_rate": 1.0,
+  "wall_duration_ms": 107.451,
+  "dimensions": {
+    "status": {
+      "total": 20,
+      "passed": 20
+    },
+    "market_evidence_set": {
+      "total": 20,
+      "passed": 20
+    },
+    "numerical_return": {
+      "total": 15,
+      "passed": 15
+    },
+    "http_call_count": {
+      "total": 20,
+      "passed": 20
+    },
+    "execution_budget": {
+      "total": 20,
+      "passed": 20
+    },
+    "citation_reference_integrity": {
+      "total": 20,
+      "passed": 20
+    },
+    "consistent_market_window": {
+      "total": 12,
+      "passed": 12
+    },
+    "expected_failure_preserved": {
+      "total": 5,
+      "passed": 5
+    },
+    "required_document_present": {
+      "total": 1,
+      "passed": 1
+    }
+  },
+  "summary": {
+    "runs": 20,
+    "latency_ms": {
+      "sum": 100.383,
+      "mean": 5.019,
+      "median": 4.054,
+      "min": 3.616,
+      "max": 21.961
+    },
+    "http_calls": 22,
+    "network_attempts": 0,
+    "live_llm_calls": 0,
+    "tokens": {
+      "input": {
+        "total": 0,
+        "observed_total": 0,
+        "observed_calls": 0,
+        "missing_calls": 0
+      },
+      "output": {
+        "total": 0,
+        "observed_total": 0,
+        "observed_calls": 0,
+        "missing_calls": 0
+      }
+    },
+    "estimated_external_llm_api_cost_usd": 0,
+    "operating_cost_usd": null,
+    "cost_scope": "Local Ollama API fee is zero. GPT-6 Astra uses a dated Standard text estimate; cache-write premiums, other fees, tax and operating cost are unmeasured. Not an invoice."
+  },
+  "by_expected_status": {
+    "completed": {
+      "total": 7,
+      "passed": 7
+    },
+    "partial": {
+      "total": 4,
+      "passed": 4
+    },
+    "error": {
+      "total": 1,
+      "passed": 1
+    },
+    "needs_clarification": {
+      "total": 3,
+      "passed": 3
+    },
+    "unsupported": {
+      "total": 2,
+      "passed": 2
+    },
+    "insufficient_evidence": {
+      "total": 3,
+      "passed": 3
+    }
+  },
+  "cases": [
+    {
+      "case_id": "btc-7d",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "btc-7d",
+        "question": "BTCUSDT 7d",
+        "status": "completed",
+        "returns": {
+          "BTCUSDT": "10"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "b2f5117b-0d1c-49e0-8666-72fd695e1d9a",
+        "started_at": "2026-10-16T02:14:21.997523+00:00",
+        "request": {
+          "question": "BTCUSDT 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.443
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.01,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.103
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.016946Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 21.961,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "eth-7d",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for ETHUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "eth-7d",
+        "question": "이더리움 7일 비교",
+        "status": "completed",
+        "returns": {
+          "ETHUSDT": "-10"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "71c54599-1c67-40f9-a894-63fc3c4804b6",
+        "started_at": "2026-10-16T02:14:22.019857+00:00",
+        "request": {
+          "question": "이더리움 7일 비교",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-ETHUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.279
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.008,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"200\",\"200\",\"198\",\"198\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"198\",\"198\",\"196\",\"196\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"196\",\"196\",\"194\",\"194\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"194\",\"194\",\"192\",\"192\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"192\",\"192\",\"191\",\"191\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"191\",\"191\",\"190\",\"190\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"190\",\"190\",\"180\",\"180\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.07
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "ETHUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nETHUSDT: 200 → 180 USDT, -10.00% [market-ETHUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-ETHUSDT",
+              "kind": "market",
+              "title": "ETHUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"ETHUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"200\", \"close\": \"180\", \"return_pct\": \"-10.0\", \"display_return_pct\": \"-10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"200\", \"200\", \"198\", \"198\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"198\", \"198\", \"196\", \"196\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"196\", \"196\", \"194\", \"194\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"194\", \"194\", \"192\", \"192\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"192\", \"192\", \"191\", \"191\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"191\", \"191\", \"190\", \"190\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"190\", \"190\", \"180\", \"180\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.024292Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-ETHUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 4.558,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "bnb-7d",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BNBUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "bnb-7d",
+        "question": "BNB 7d",
+        "status": "completed",
+        "returns": {
+          "BNBUSDT": "0"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "96ca2ace-ae20-4883-b129-bbad34386406",
+        "started_at": "2026-10-16T02:14:22.024845+00:00",
+        "request": {
+          "question": "BNB 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BNBUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BNBUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.301
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.009,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"50\",\"51\",\"50\",\"51\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"51\",\"52\",\"51\",\"52\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"52\",\"52\",\"51\",\"51\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"51\",\"51\",\"50\",\"50\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"50\",\"50\",\"50\",\"50\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"50\",\"50\",\"50\",\"50\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"50\",\"50\",\"50\",\"50\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.073
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BNBUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBNBUSDT: 50 → 50 USDT, +0.00% [market-BNBUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BNBUSDT",
+              "kind": "market",
+              "title": "BNBUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BNBUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"50\", \"close\": \"50\", \"return_pct\": \"0\", \"display_return_pct\": \"0.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"50\", \"51\", \"50\", \"51\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"51\", \"52\", \"51\", \"52\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"52\", \"52\", \"51\", \"51\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"51\", \"51\", \"50\", \"50\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"50\", \"50\", \"50\", \"50\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.029646Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BNBUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 4.95,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "compare-7d",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for ETHUSDT"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BNBUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "compare-7d",
+        "question": "BTCUSDT와 ETHUSDT, BNBUSDT의 완료된 UTC 7일 비교",
+        "status": "completed",
+        "returns": {
+          "BTCUSDT": "10",
+          "ETHUSDT": "-10",
+          "BNBUSDT": "0"
+        },
+        "http_calls": 3
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "2b9861aa-bd8a-40e2-9b1f-0f26d608db09",
+        "started_at": "2026-10-16T02:14:22.030208+00:00",
+        "request": {
+          "question": "BTCUSDT와 ETHUSDT, BNBUSDT의 완료된 UTC 7일 비교",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.257
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-ETHUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.188
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BNBUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BNBUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.193
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.009,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.07
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"200\",\"200\",\"198\",\"198\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"198\",\"198\",\"196\",\"196\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"196\",\"196\",\"194\",\"194\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"194\",\"194\",\"192\",\"192\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"192\",\"192\",\"191\",\"191\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"191\",\"191\",\"190\",\"190\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"190\",\"190\",\"180\",\"180\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.04
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 3,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"50\",\"51\",\"50\",\"51\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"51\",\"52\",\"51\",\"52\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"52\",\"52\",\"51\",\"51\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"51\",\"51\",\"50\",\"50\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"50\",\"50\",\"50\",\"50\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"50\",\"50\",\"50\",\"50\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"50\",\"50\",\"50\",\"50\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.054
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "BNBUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nETHUSDT: 200 → 180 USDT, -10.00% [market-ETHUSDT]\n\nBNBUSDT: 50 → 50 USDT, +0.00% [market-BNBUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.034395Z"
+            },
+            {
+              "source_id": "market-ETHUSDT",
+              "kind": "market",
+              "title": "ETHUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"ETHUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"200\", \"close\": \"180\", \"return_pct\": \"-10.0\", \"display_return_pct\": \"-10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"200\", \"200\", \"198\", \"198\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"198\", \"198\", \"196\", \"196\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"196\", \"196\", \"194\", \"194\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"194\", \"194\", \"192\", \"192\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"192\", \"192\", \"191\", \"191\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"191\", \"191\", \"190\", \"190\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"190\", \"190\", \"180\", \"180\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.034590Z"
+            },
+            {
+              "source_id": "market-BNBUSDT",
+              "kind": "market",
+              "title": "BNBUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BNBUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"50\", \"close\": \"50\", \"return_pct\": \"0\", \"display_return_pct\": \"0.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"50\", \"51\", \"50\", \"51\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"51\", \"52\", \"51\", \"52\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"52\", \"52\", \"51\", \"51\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"51\", \"51\", \"50\", \"50\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"50\", \"50\", \"50\", \"50\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.034785Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "market-ETHUSDT",
+            "market-BNBUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 4.686,
+          "http_calls": 3,
+          "tool_calls": 4,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "btc-one-bar",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "btc-one-bar",
+        "question": "BTC 24h",
+        "status": "completed",
+        "returns": {
+          "BTCUSDT": "200/53"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "3ea319eb-3622-4409-a1d4-9e32e7774d28",
+        "started_at": "2026-10-16T02:14:22.035253+00:00",
+        "request": {
+          "question": "BTC 24h",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "24h",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.256
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.008,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.066
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT"
+          ],
+          "period": "24h",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 106 → 110 USDT, +3.77% [market-BTCUSDT]\n\nUTC 구간: [2026-10-15T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 1 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"24h\", \"start_utc\": \"2026-10-15T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"106\", \"close\": \"110\", \"return_pct\": \"3.773584905660377358490566037735849056600\", \"display_return_pct\": \"3.77\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.039497Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 4.357,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "eth-one-bar",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for ETHUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "eth-one-bar",
+        "question": "ETH 완료된 UTC 일봉 1개",
+        "status": "completed",
+        "returns": {
+          "ETHUSDT": "-100/19"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "3a7a78fc-d2d4-40a0-97fe-db2c13c27d2e",
+        "started_at": "2026-10-16T02:14:22.039944+00:00",
+        "request": {
+          "question": "ETH 완료된 UTC 일봉 1개",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "24h",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-ETHUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.186
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.006,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1792022400000,\"190\",\"190\",\"180\",\"180\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.044
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "ETHUSDT"
+          ],
+          "period": "24h",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nETHUSDT: 190 → 180 USDT, -5.26% [market-ETHUSDT]\n\nUTC 구간: [2026-10-15T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-ETHUSDT",
+              "kind": "market",
+              "title": "ETHUSDT · 1 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+              "content": "{\"symbol\": \"ETHUSDT\", \"period\": \"24h\", \"start_utc\": \"2026-10-15T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"190\", \"close\": \"180\", \"return_pct\": \"-5.263157894736842105263157894736842105260\", \"display_return_pct\": \"-5.26\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1792022400000, \"190\", \"190\", \"180\", \"180\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.043849Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-ETHUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.991,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "bnb-one-bar",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected completed, got completed"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BNBUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "bnb-one-bar",
+        "question": "BNB 하루",
+        "status": "completed",
+        "returns": {
+          "BNBUSDT": "0"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "9f94b47f-e59a-4c63-ad2a-0fb3b15e48db",
+        "started_at": "2026-10-16T02:14:22.044299+00:00",
+        "request": {
+          "question": "BNB 하루",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BNBUSDT",
+              "period": "24h",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BNBUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.171
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.006,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1792022400000,\"50\",\"50\",\"50\",\"50\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.042
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BNBUSDT"
+          ],
+          "period": "24h",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "completed",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBNBUSDT: 50 → 50 USDT, +0.00% [market-BNBUSDT]\n\nUTC 구간: [2026-10-15T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BNBUSDT",
+              "kind": "market",
+              "title": "BNBUSDT · 1 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1792022400000&endTime=1792108799999&timeZone=0&limit=1",
+              "content": "{\"symbol\": \"BNBUSDT\", \"period\": \"24h\", \"start_utc\": \"2026-10-15T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"50\", \"close\": \"50\", \"return_pct\": \"0\", \"display_return_pct\": \"0.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1792022400000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.048141Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BNBUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.929,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "partial-timeout",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected partial, got partial"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BNBUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "expected_failure_preserved",
+          "passed": true,
+          "failure_reason": "expected failure was not preserved"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "partial-timeout",
+        "question": "BTC ETH BNB 7d",
+        "scenario": "eth_timeout",
+        "status": "partial",
+        "returns": {
+          "BTCUSDT": "10",
+          "BNBUSDT": "0"
+        },
+        "http_calls": 3,
+        "failure_type": "ReadTimeout"
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "0dbbf498-beb7-4376-92fe-4fc04b2ef1ff",
+        "started_at": "2026-10-16T02:14:22.048566+00:00",
+        "request": {
+          "question": "BTC ETH BNB 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "eth_timeout",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.19
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "ETHUSDT",
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.081
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BNBUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BNBUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.151
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.006,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.047
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "error": {
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.012
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 3,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"50\",\"51\",\"50\",\"51\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"51\",\"52\",\"51\",\"52\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"52\",\"52\",\"51\",\"51\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"51\",\"51\",\"50\",\"50\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"50\",\"50\",\"50\",\"50\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"50\",\"50\",\"50\",\"50\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"50\",\"50\",\"50\",\"50\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.041
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "BNBUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "partial",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nBNBUSDT: 50 → 50 USDT, +0.00% [market-BNBUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n확인 실패: ETHUSDT · ReadTimeout. 해당 종목의 수치는 제시하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.052394Z"
+            },
+            {
+              "source_id": "market-BNBUSDT",
+              "kind": "market",
+              "title": "BNBUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BNBUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"50\", \"close\": \"50\", \"return_pct\": \"0\", \"display_return_pct\": \"0.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"50\", \"51\", \"50\", \"51\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"51\", \"52\", \"51\", \"52\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"52\", \"52\", \"51\", \"51\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"51\", \"51\", \"50\", \"50\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"50\", \"50\", \"50\", \"50\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"50\", \"50\", \"50\", \"50\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.052628Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "market-BNBUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [
+          {
+            "symbol": "ETHUSDT",
+            "type": "ReadTimeout",
+            "message": "Synthetic timeout (failure injection)"
+          }
+        ],
+        "metrics": {
+          "duration_ms": 4.159,
+          "http_calls": 3,
+          "tool_calls": 4,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "partial-missing",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected partial, got partial"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "expected_failure_preserved",
+          "passed": true,
+          "failure_reason": "expected failure was not preserved"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "partial-missing",
+        "question": "BTC ETH 7d",
+        "scenario": "eth_missing",
+        "status": "partial",
+        "returns": {
+          "BTCUSDT": "10"
+        },
+        "http_calls": 2,
+        "failure_type": "ValueError"
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "019c36d5-bbcb-4011-90c7-b6ef5972af21",
+        "started_at": "2026-10-16T02:14:22.053076+00:00",
+        "request": {
+          "question": "BTC ETH 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "eth_missing",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.17
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "ETHUSDT",
+              "type": "ValueError",
+              "message": "expected 7 completed candles"
+            },
+            "duration_ms": 0.128
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.006,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.041
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"200\",\"200\",\"198\",\"198\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"198\",\"198\",\"196\",\"196\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"196\",\"196\",\"194\",\"194\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"194\",\"194\",\"192\",\"192\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"192\",\"192\",\"191\",\"191\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"191\",\"191\",\"190\",\"190\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.045
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "partial",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n확인 실패: ETHUSDT · ValueError. 해당 종목의 수치는 제시하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.056953Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [
+          {
+            "symbol": "ETHUSDT",
+            "type": "ValueError",
+            "message": "expected 7 completed candles"
+          }
+        ],
+        "metrics": {
+          "duration_ms": 4.111,
+          "http_calls": 2,
+          "tool_calls": 3,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "partial-invalid",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected partial, got partial"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "expected_failure_preserved",
+          "passed": true,
+          "failure_reason": "expected failure was not preserved"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "partial-invalid",
+        "question": "BTC ETH 7d",
+        "scenario": "eth_invalid",
+        "status": "partial",
+        "returns": {
+          "BTCUSDT": "10"
+        },
+        "http_calls": 2,
+        "failure_type": "ValueError"
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "db06ee64-47aa-4c35-bfae-360a05b49cef",
+        "started_at": "2026-10-16T02:14:22.057532+00:00",
+        "request": {
+          "question": "BTC ETH 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "eth_invalid",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.36
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "ETHUSDT",
+              "type": "ValueError",
+              "message": "non-positive or non-finite OHLC"
+            },
+            "duration_ms": 0.143
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.01,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.102
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"NaN\",\"200\",\"198\",\"198\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"198\",\"198\",\"196\",\"196\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"196\",\"196\",\"194\",\"194\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"194\",\"194\",\"192\",\"192\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"192\",\"192\",\"191\",\"191\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"191\",\"191\",\"190\",\"190\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"190\",\"190\",\"180\",\"180\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.046
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "partial",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n확인 실패: ETHUSDT · ValueError. 해당 종목의 수치는 제시하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.062071Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [
+          {
+            "symbol": "ETHUSDT",
+            "type": "ValueError",
+            "message": "non-positive or non-finite OHLC"
+          }
+        ],
+        "metrics": {
+          "duration_ms": 4.829,
+          "http_calls": 2,
+          "tool_calls": 3,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "partial-rate-limit",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected partial, got partial"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "expected_failure_preserved",
+          "passed": true,
+          "failure_reason": "expected failure was not preserved"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "partial-rate-limit",
+        "question": "BTC ETH 7d",
+        "scenario": "eth_rate_limit",
+        "status": "partial",
+        "returns": {
+          "BTCUSDT": "10"
+        },
+        "http_calls": 2,
+        "failure_type": "HTTPStatusError"
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "796b093b-f9e0-43de-b7b6-b75454349bbd",
+        "started_at": "2026-10-16T02:14:22.062708+00:00",
+        "request": {
+          "question": "BTC ETH 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "eth_rate_limit",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.183
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "ETHUSDT",
+              "type": "HTTPStatusError",
+              "message": "Client error '429 Too Many Requests' for url 'https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+            },
+            "duration_ms": 0.12
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.007,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.045
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "status_code": 429,
+            "response_text": "{\"code\":-1003,\"msg\":\"Synthetic rate limit\"}",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.029
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "partial",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n확인 실패: ETHUSDT · HTTPStatusError. 해당 종목의 수치는 제시하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.066673Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [
+          {
+            "symbol": "ETHUSDT",
+            "type": "HTTPStatusError",
+            "message": "Client error '429 Too Many Requests' for url 'https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+          }
+        ],
+        "metrics": {
+          "duration_ms": 4.189,
+          "http_calls": 2,
+          "tool_calls": 3,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "all-timeout",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected error, got error"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "expected_failure_preserved",
+          "passed": true,
+          "failure_reason": "expected failure was not preserved"
+        }
+      ],
+      "expected": {
+        "id": "all-timeout",
+        "question": "BTC ETH BNB 7d",
+        "scenario": "all_timeout",
+        "status": "error",
+        "returns": {},
+        "http_calls": 3,
+        "failure_type": "ReadTimeout"
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "b46a4df6-6f34-41a3-aad9-f5cec4c094d2",
+        "started_at": "2026-10-16T02:14:22.067225+00:00",
+        "request": {
+          "question": "BTC ETH BNB 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "all_timeout",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "BTCUSDT",
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.086
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "ETHUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "ETHUSDT",
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.067
+          },
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BNBUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": null,
+            "error": {
+              "symbol": "BNBUSDT",
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.056
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.005,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "error": {
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.01
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 2,
+            "error": {
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.005
+          },
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BNBUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 3,
+            "error": {
+              "type": "ReadTimeout",
+              "message": "Synthetic timeout (failure injection)"
+            },
+            "duration_ms": 0.005
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "BNBUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "error",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\n확인 실패: BTCUSDT · ReadTimeout. 해당 종목의 수치는 제시하지 않습니다.\n\n확인 실패: ETHUSDT · ReadTimeout. 해당 종목의 수치는 제시하지 않습니다.\n\n확인 실패: BNBUSDT · ReadTimeout. 해당 종목의 수치는 제시하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "doc-klines"
+          ]
+        },
+        "failures": [
+          {
+            "symbol": "BTCUSDT",
+            "type": "ReadTimeout",
+            "message": "Synthetic timeout (failure injection)"
+          },
+          {
+            "symbol": "ETHUSDT",
+            "type": "ReadTimeout",
+            "message": "Synthetic timeout (failure injection)"
+          },
+          {
+            "symbol": "BNBUSDT",
+            "type": "ReadTimeout",
+            "message": "Synthetic timeout (failure injection)"
+          }
+        ],
+        "metrics": {
+          "duration_ms": 3.809,
+          "http_calls": 3,
+          "tool_calls": 4,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "missing-period",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected needs_clarification, got needs_clarification"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "missing-period",
+        "question": "BTC와 ETH 비교",
+        "status": "needs_clarification",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "c7d51b8a-2a34-4d3f-9cac-e2b9b01573df",
+        "started_at": "2026-10-16T02:14:22.071353+00:00",
+        "request": {
+          "question": "BTC와 ETH 비교",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "clarify",
+          "symbols": [],
+          "period": null,
+          "document_query": null,
+          "message": "기간을 알려주세요: 완료된 UTC 일봉 1개(24h) 또는 7개(7d)."
+        },
+        "result": {
+          "status": "needs_clarification",
+          "answer": "기간을 알려주세요: 완료된 UTC 일봉 1개(24h) 또는 7개(7d).",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.957,
+          "http_calls": 0,
+          "tool_calls": 0,
+          "collection_rounds": 0,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "missing-symbol",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected needs_clarification, got needs_clarification"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "missing-symbol",
+        "question": "7일 수익률 비교",
+        "status": "needs_clarification",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "70828335-d3da-4b84-b135-cb65e9e39ed3",
+        "started_at": "2026-10-16T02:14:22.075703+00:00",
+        "request": {
+          "question": "7일 수익률 비교",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "clarify",
+          "symbols": [],
+          "period": null,
+          "document_query": null,
+          "message": "BTCUSDT·ETHUSDT·BNBUSDT 중 대상과 완료된 UTC 일봉 1개 또는 7개를 알려주세요."
+        },
+        "result": {
+          "status": "needs_clarification",
+          "answer": "BTCUSDT·ETHUSDT·BNBUSDT 중 대상과 완료된 UTC 일봉 1개 또는 7개를 알려주세요.",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 4.129,
+          "http_calls": 0,
+          "tool_calls": 0,
+          "collection_rounds": 0,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "rolling-window",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected needs_clarification, got needs_clarification"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "rolling-window",
+        "question": "BTC rolling 24h",
+        "status": "needs_clarification",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "9e25cc37-1eab-4d45-891d-a64bcab20f80",
+        "started_at": "2026-10-16T02:14:22.080182+00:00",
+        "request": {
+          "question": "BTC rolling 24h",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "clarify",
+          "symbols": [],
+          "period": null,
+          "document_query": null,
+          "message": "롤링 24시간·임의 날짜는 지원하지 않습니다. 완료된 UTC 일봉 1개 또는 7개 중 선택해 주세요."
+        },
+        "result": {
+          "status": "needs_clarification",
+          "answer": "롤링 24시간·임의 날짜는 지원하지 않습니다. 완료된 UTC 일봉 1개 또는 7개 중 선택해 주세요.",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.622,
+          "http_calls": 0,
+          "tool_calls": 0,
+          "collection_rounds": 0,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "unsupported-symbol",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected unsupported, got unsupported"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "unsupported-symbol",
+        "question": "BTC와 SOLUSDT 7d",
+        "status": "unsupported",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "96e0af31-912e-481e-9e26-0d066c1c3e79",
+        "started_at": "2026-10-16T02:14:22.084108+00:00",
+        "request": {
+          "question": "BTC와 SOLUSDT 7d",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "unsupported",
+          "symbols": [],
+          "period": null,
+          "document_query": null,
+          "message": "지원 대상은 BTCUSDT, ETHUSDT, BNBUSDT 현물입니다."
+        },
+        "result": {
+          "status": "unsupported",
+          "answer": "지원 대상은 BTCUSDT, ETHUSDT, BNBUSDT 현물입니다.",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.616,
+          "http_calls": 0,
+          "tool_calls": 0,
+          "collection_rounds": 0,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "causality-not-proven",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected insufficient_evidence, got insufficient_evidence"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "numerical_return",
+          "passed": true,
+          "failure_reason": "incorrect percentage for BTCUSDT"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "consistent_market_window",
+          "passed": true,
+          "failure_reason": "market windows are inconsistent"
+        }
+      ],
+      "expected": {
+        "id": "causality-not-proven",
+        "question": "왜 비트코인은 7일 동안 상승했어?",
+        "status": "insufficient_evidence",
+        "returns": {
+          "BTCUSDT": "10"
+        },
+        "http_calls": 1
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "e9e929f6-c235-45c7-9e0f-8f5980a88682",
+        "started_at": "2026-10-16T02:14:22.088025+00:00",
+        "request": {
+          "question": "왜 비트코인은 7일 동안 상승했어?",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "market.fetch",
+            "input": {
+              "symbol": "BTCUSDT",
+              "period": "7d",
+              "as_of": "2026-10-16T00:00:00+00:00"
+            },
+            "output": {
+              "source_id": "market-BTCUSDT"
+            },
+            "error": null,
+            "duration_ms": 0.263
+          },
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "klines UTC",
+              "top_k": 2
+            },
+            "duration_ms": 0.008,
+            "output": [
+              "doc-klines"
+            ],
+            "error": null
+          }
+        ],
+        "http": [
+          {
+            "method": "GET",
+            "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+            "body": "",
+            "sequence": 1,
+            "status_code": 200,
+            "response_text": "[[1791504000000,\"100\",\"101\",\"100\",\"101\",\"1\",1791590399999,\"1\",1,\"1\",\"1\",\"0\"],[1791590400000,\"101\",\"102\",\"101\",\"102\",\"1\",1791676799999,\"1\",1,\"1\",\"1\",\"0\"],[1791676800000,\"102\",\"103\",\"102\",\"103\",\"1\",1791763199999,\"1\",1,\"1\",\"1\",\"0\"],[1791763200000,\"103\",\"104\",\"103\",\"104\",\"1\",1791849599999,\"1\",1,\"1\",\"1\",\"0\"],[1791849600000,\"104\",\"105\",\"104\",\"105\",\"1\",1791935999999,\"1\",1,\"1\",\"1\",\"0\"],[1791936000000,\"105\",\"106\",\"105\",\"106\",\"1\",1792022399999,\"1\",1,\"1\",\"1\",\"0\"],[1792022400000,\"106\",\"110\",\"106\",\"110\",\"1\",1792108799999,\"1\",1,\"1\",\"1\",\"0\"]]",
+            "retry_after": null,
+            "error": null,
+            "duration_ms": 0.07
+          }
+        ],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [
+            "BTCUSDT"
+          ],
+          "period": "7d",
+          "document_query": "klines UTC",
+          "message": null
+        },
+        "result": {
+          "status": "insufficient_evidence",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\nBTCUSDT: 100 → 110 USDT, +10.00% [market-BTCUSDT]\n\nUTC 구간: [2026-10-09T00:00:00+00:00, 2026-10-16T00:00:00+00:00).\n\n(마지막 종가 / 첫 시가 − 1) × 100. 24h는 완료된 UTC 일봉 1개이며 롤링 24시간이 아닙니다.\n\n가격 변화는 계산했지만, API 설명 문서는 상승·하락의 원인을 입증하지 못합니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+          "sources": [
+            {
+              "source_id": "market-BTCUSDT",
+              "kind": "market",
+              "title": "BTCUSDT · 7 completed UTC daily candle(s)",
+              "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1791504000000&endTime=1792108799999&timeZone=0&limit=7",
+              "content": "{\"symbol\": \"BTCUSDT\", \"period\": \"7d\", \"start_utc\": \"2026-10-09T00:00:00+00:00\", \"end_utc_exclusive\": \"2026-10-16T00:00:00+00:00\", \"open\": \"100\", \"close\": \"110\", \"return_pct\": \"10.0\", \"display_return_pct\": \"10.00\", \"calculation\": \"(last_close / first_open - 1) * 100\", \"decimal_precision\": 40, \"candles\": [[1791504000000, \"100\", \"101\", \"100\", \"101\", \"1\", 1791590399999, \"1\", 1, \"1\", \"1\", \"0\"], [1791590400000, \"101\", \"102\", \"101\", \"102\", \"1\", 1791676799999, \"1\", 1, \"1\", \"1\", \"0\"], [1791676800000, \"102\", \"103\", \"102\", \"103\", \"1\", 1791763199999, \"1\", 1, \"1\", \"1\", \"0\"], [1791763200000, \"103\", \"104\", \"103\", \"104\", \"1\", 1791849599999, \"1\", 1, \"1\", \"1\", \"0\"], [1791849600000, \"104\", \"105\", \"104\", \"105\", \"1\", 1791935999999, \"1\", 1, \"1\", \"1\", \"0\"], [1791936000000, \"105\", \"106\", \"105\", \"106\", \"1\", 1792022399999, \"1\", 1, \"1\", \"1\", \"0\"], [1792022400000, \"106\", \"110\", \"106\", \"110\", \"1\", 1792108799999, \"1\", 1, \"1\", \"1\", \"0\"]]}",
+              "retrieved_at": "2026-10-16T02:14:22.091920Z"
+            },
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "market-BTCUSDT",
+            "doc-klines"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.997,
+          "http_calls": 1,
+          "tool_calls": 2,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "document-reference",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected insufficient_evidence, got insufficient_evidence"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        },
+        {
+          "metric": "required_document_present",
+          "passed": true,
+          "failure_reason": "expected document reference is missing"
+        }
+      ],
+      "expected": {
+        "id": "document-reference",
+        "question": "Binance klines API UTC 일봉 문서",
+        "status": "insufficient_evidence",
+        "returns": {},
+        "http_calls": 0,
+        "documents_required": true
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "6c393a2d-d7df-495c-8ed2-01b9fb49e64d",
+        "started_at": "2026-10-16T02:14:22.092353+00:00",
+        "request": {
+          "question": "Binance klines API UTC 일봉 문서",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "Binance klines API UTC 일봉 문서",
+              "top_k": 2
+            },
+            "duration_ms": 0.01,
+            "output": [
+              "doc-klines",
+              "doc-market-api"
+            ],
+            "error": null
+          }
+        ],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [],
+          "period": null,
+          "document_query": "Binance klines API UTC 일봉 문서",
+          "message": null
+        },
+        "result": {
+          "status": "insufficient_evidence",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\n검토된 API 문서에서 관련 자료를 찾았습니다. 아래 발췌를 확인해 주세요.\n\n문서 검색 결과만으로 질문 전체에 답했다고 판정하지 않습니다.\n\n[doc-klines] Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.\n\n[doc-market-api] Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+          "sources": [
+            {
+              "source_id": "doc-klines",
+              "kind": "document",
+              "title": "Binance Spot API · Klines / 일봉",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+              "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            },
+            {
+              "source_id": "doc-market-api",
+              "kind": "document",
+              "title": "Binance Spot API · Public market data / 공개 시장 자료",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+              "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+              "retrieved_at": "2026-10-15T23:52:31Z"
+            }
+          ],
+          "source_ids": [
+            "doc-klines",
+            "doc-market-api"
+          ]
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.714,
+          "http_calls": 0,
+          "tool_calls": 1,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "document-miss",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected insufficient_evidence, got insufficient_evidence"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "document-miss",
+        "question": "문서 zzzquantumunknown",
+        "status": "insufficient_evidence",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "b5e20e63-d726-454a-b2c5-9d9642a819de",
+        "started_at": "2026-10-16T02:14:22.096402+00:00",
+        "request": {
+          "question": "문서 zzzquantumunknown",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [
+          {
+            "tool": "documents.search",
+            "round": 1,
+            "input": {
+              "query": "문서 zzzquantumunknown",
+              "top_k": 2
+            },
+            "duration_ms": 0.005,
+            "output": [],
+            "error": null
+          }
+        ],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "research",
+          "symbols": [],
+          "period": null,
+          "document_query": "문서 zzzquantumunknown",
+          "message": null
+        },
+        "result": {
+          "status": "insufficient_evidence",
+          "answer": "합성 데모 데이터 — 실제 시세가 아닙니다.\n\n작은 API 문서 모음에서 관련 근거를 찾지 못했습니다.\n\n문서 검색 결과만으로 질문 전체에 답했다고 판정하지 않습니다.",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.984,
+          "http_calls": 0,
+          "tool_calls": 1,
+          "collection_rounds": 1,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    },
+    {
+      "case_id": "unsupported-trading",
+      "passed": true,
+      "errors": [],
+      "checks": [
+        {
+          "metric": "status",
+          "passed": true,
+          "failure_reason": "status: expected unsupported, got unsupported"
+        },
+        {
+          "metric": "market_evidence_set",
+          "passed": true,
+          "failure_reason": "market evidence set differs from expected symbols"
+        },
+        {
+          "metric": "http_call_count",
+          "passed": true,
+          "failure_reason": "unexpected HTTP request count"
+        },
+        {
+          "metric": "execution_budget",
+          "passed": true,
+          "failure_reason": "baseline exceeded its execution contract"
+        },
+        {
+          "metric": "citation_reference_integrity",
+          "passed": true,
+          "failure_reason": "unknown citation"
+        }
+      ],
+      "expected": {
+        "id": "unsupported-trading",
+        "question": "BTC 7d 선물 매수 추천",
+        "status": "unsupported",
+        "returns": {},
+        "http_calls": 0
+      },
+      "run": {
+        "format_version": 1,
+        "run_id": "d2af663d-80f8-45b3-b6e6-77113c6dc348",
+        "started_at": "2026-10-16T02:14:22.100734+00:00",
+        "request": {
+          "question": "BTC 7d 선물 매수 추천",
+          "mode": "demo",
+          "planner": "baseline",
+          "scenario": "none",
+          "as_of": "2026-10-16T00:00:00Z"
+        },
+        "replay_of": null,
+        "execution_mode": "demo",
+        "metadata": {
+          "app_version": "0.1.0",
+          "code_sha256": "c944516698839cbac69c71f2586f5b75e07e32821d6b1931390006eb0fa0489a",
+          "prompt_version": "bounded-planner-v2",
+          "model": null,
+          "model_role": "planner only; numerical report is rendered by Python",
+          "source_revision": null,
+          "source_revision_note": "Content hash above; no Git revision asserted.",
+          "max_collection_rounds": 2,
+          "max_market_fetch_batches": 1,
+          "market_timeout_seconds": 10,
+          "ollama_timeout_seconds": 300
+        },
+        "documents": [
+          {
+            "source_id": "doc-klines",
+            "kind": "document",
+            "title": "Binance Spot API · Klines / 일봉",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+            "content": "Reviewed paraphrase, not a live document fetch. GET /api/v3/klines returns symbol candles identified by opening timestamps. interval=1d selects daily bars; timeZone=0 uses UTC. startTime and endTime are UTC timestamps. 응답의 시가·종가·시작 및 종료 시각으로 완료된 UTC 일봉 구간을 검증한다. This reference describes API mechanics, not why a market price moved.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-market-api",
+            "kind": "document",
+            "title": "Binance Spot API · Public market data / 공개 시장 자료",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#general-api-information",
+            "content": "Reviewed paraphrase. Binance documents data-api.binance.vision for public market-data requests. JSON response timestamps use milliseconds by default. 공개 시세 조회는 거래 주문이나 계정 접근과 구분된다. These API instructions provide no evidence of market-moving events.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          },
+          {
+            "source_id": "doc-http-errors",
+            "kind": "document",
+            "title": "Binance Spot API · HTTP errors / 오류",
+            "url": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#http-return-codes",
+            "content": "Reviewed paraphrase. HTTP 429 indicates a rate limit. Binance instructs clients to back off instead of sending repeated requests after a 429. HTTP 5xx indicates a server-side problem. 요청 제한·서버 오류는 정상 시세로 대체할 근거가 아니다. This project records failures without automatic retries.",
+            "retrieved_at": "2026-10-15T23:52:31Z"
+          }
+        ],
+        "trace": [],
+        "http": [],
+        "llm_responses": [],
+        "planner_validation": {
+          "output_valid": null,
+          "matches_request": null
+        },
+        "plan": {
+          "action": "unsupported",
+          "symbols": [],
+          "period": null,
+          "document_query": null,
+          "message": "가격 예측·매매·선물은 지원하지 않습니다. 현물의 완료된 UTC 일봉을 비교할 수 있습니다."
+        },
+        "result": {
+          "status": "unsupported",
+          "answer": "가격 예측·매매·선물은 지원하지 않습니다. 현물의 완료된 UTC 일봉을 비교할 수 있습니다.",
+          "sources": [],
+          "source_ids": []
+        },
+        "failures": [],
+        "metrics": {
+          "duration_ms": 3.835,
+          "http_calls": 0,
+          "tool_calls": 0,
+          "collection_rounds": 0,
+          "llm_calls": 0,
+          "live_llm_calls": 0,
+          "replayed_http_calls": 0,
+          "network_attempts": 0,
+          "usage": []
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Development cases used during implementation; not a held-out benchmark.",
+    "Only research requests passing the regex scope gate reach the model; other cases do not measure the model.",
+    "No live market accuracy, general model quality, or human grounding score measured."
+  ]
+}
