@@ -1,6 +1,6 @@
 # OpenAI API 연결과 실행
 
-현재 구현은 **선택형 LLM 계획 생성이 붙은 고정 연구 워크플로우**다. 모델이 도구를 자율 선택하며 반복 실행하는 에이전트는 아니다. API 통신 코드는 이미 [llm.py](../src/market_agent/llm.py)에 있고, 키를 읽어 인증 헤더를 만드는 곳은 [runtime.py](../src/market_agent/runtime.py)다.
+가격 경로는 **선택형 LLM 계획 생성이 붙은 고정 연구 워크플로우**다. 뉴스·기사·거시경제를 외부 검색하려면 별도의 [웹 조사 모드](web-research.md)를 사용한다. 웹 조사 모드는 OpenAI의 hosted search/read를 사용하며 앱 자체의 범용 자율 에이전트 루프는 없다. API 통신 코드는 이미 [llm.py](../src/market_agent/llm.py)에 있고, 키를 읽어 인증 헤더를 만드는 곳은 [runtime.py](../src/market_agent/runtime.py)다.
 
 ## 최초 설치
 
