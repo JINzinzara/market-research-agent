@@ -2,6 +2,7 @@
 const $ = (selector) => document.querySelector(selector);
 let activeRecord = null;
 let activeEvaluation = null;
+let previousPriceControls = null;
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -33,7 +34,12 @@ function view(name) {
 $("#nav-research").onclick = () => view("research");
 $("#nav-runs").onclick = () => view("runs");
 document.querySelectorAll("[data-question]").forEach((button) => {
-  button.onclick = () => { $("#question").value = button.dataset.question; $("#question").focus(); };
+  button.onclick = () => {
+    $("#question").value = button.dataset.question;
+    $("#web").checked = button.dataset.web === "true";
+    $("#web").onchange();
+    $("#question").focus();
+  };
 });
 $("#mode").onchange = () => {
   const live = $("#mode").value === "live";
@@ -43,18 +49,34 @@ $("#mode").onchange = () => {
     ? "Binance 공개 시장 API를 실제 호출합니다. 실패한 종목은 데모 값으로 대체하지 않습니다."
     : "합성 시세 · 기준 시각 2026-10-16 00:00 UTC. 실제 시장을 나타내지 않습니다.";
 };
+$("#web").onchange = () => {
+  const web = $("#web").checked;
+  if (web) {
+    if (!$("#mode").disabled) previousPriceControls = [$("#mode").value, $("#planner").value];
+    $("#mode").value = "live"; $("#planner").value = "openai";
+  } else if ($("#mode").disabled && previousPriceControls) {
+    [$("#mode").value, $("#planner").value] = previousPriceControls;
+  }
+  $("#mode").disabled = web;
+  $("#planner").disabled = web;
+  $("#mode").onchange();
+  if (web) $("#mode-note").textContent = "실제 웹 검색과 인용 보고서를 요청합니다. OpenAI 키가 필요하며 모델·검색 비용이 발생합니다. 가격 조회는 지원 종목과 기간이 있을 때만 실행합니다.";
+};
 
 $("#research-form").onsubmit = async (event) => {
   event.preventDefault();
   const button = $("#run-button");
   button.disabled = true;
-  $("#feedback").textContent = $("#planner").value !== "baseline"
+  $("#feedback").textContent = $("#web").checked
+    ? "웹에서 뉴스·공식 거시 자료를 조사하고 인용 보고서를 만들고 있습니다…"
+    : $("#planner").value !== "baseline"
     ? `${$("#planner").value === "ollama" ? "로컬 Ollama" : "OpenAI GPT-6 Astra"}에 계획을 요청하고 있습니다. 모델 호출 제한은 300초입니다.`
     : "요청을 검증하고 근거를 수집하고 있습니다…";
   try {
     const record = await api("/api/research", {
       question: $("#question").value, mode: $("#mode").value,
       planner: $("#planner").value, scenario: $("#scenario").value,
+      web: $("#web").checked,
     });
     render(record);
     $("#feedback").textContent = "실행 기록을 저장했습니다. 결과와 누락된 근거를 확인해 주세요.";
@@ -70,7 +92,7 @@ function render(record) {
   $("#result").hidden = false;
   $("#result-status").textContent = result.status.replaceAll("_", " ");
   $("#result-status").className = `badge ${result.status}`;
-  const origin = record.replay_of ? "RECORDED HTTP REPLAY" : record.request.mode === "demo" ? "SYNTHETIC DEMO" : "LIVE BINANCE API";
+  const origin = record.replay_of ? "RECORDED HTTP REPLAY" : record.request.web ? "WEB NEWS & MACRO" : record.request.mode === "demo" ? "SYNTHETIC DEMO" : "LIVE BINANCE API";
   $("#run-meta").textContent = `${origin} · ${record.request.planner.toUpperCase()} · as_of ${record.request.as_of} · ${record.run_id.slice(0, 8)}`;
   $("#replay-comparison").hidden = !record.comparison;
   if (record.comparison) $("#replay-comparison").textContent = record.comparison.same_result
@@ -89,8 +111,21 @@ function render(record) {
     cards.append(card);
   }
   $("#failure-notice").hidden = !record.failures.length;
-  $("#failure-notice").textContent = record.failures.map((failure) => `${failure.symbol}: ${failure.type}`).join(" · ") + " — 확인에 실패한 종목의 수치는 제외했습니다.";
-  $("#report-text").replaceChildren(...result.answer.split("\n\n").map((paragraph) => element("p", paragraph)));
+  $("#failure-notice").textContent = record.failures.map((failure) => `${failure.symbol}: ${failure.type}`).join(" · ") + " — 확인에 실패한 수집 항목의 근거는 제외했습니다.";
+  const citations = new Map(result.sources.map((source) => [source.source_id, source]));
+  $("#report-text").replaceChildren(...result.answer.split("\n\n").map((paragraph) => {
+    const node = element("p");
+    for (const part of paragraph.split(/(\[web-\d+\])/g)) {
+      const source = citations.get(part.slice(1, -1));
+      if (!source || !/^\[web-\d+\]$/.test(part)) { node.append(document.createTextNode(part)); continue; }
+      const link = element("a", part);
+      const url = new URL(source.url);
+      if (["https:", "http:"].includes(url.protocol)) link.href = url.href;
+      link.target = "_blank"; link.rel = "noopener noreferrer"; link.title = source.title;
+      node.append(link);
+    }
+    return node;
+  }));
   const library = $("#sources"); library.replaceChildren();
   $("#source-count").textContent = `${result.sources.length} REFERENCES`;
   if (!result.sources.length) library.append(element("p", "수집된 근거가 없습니다.", "subtle"));
@@ -107,7 +142,7 @@ function render(record) {
     details.append(element("pre", source.kind === "market" ? JSON.stringify(JSON.parse(source.content), null, 2) : source.content));
     item.append(details); library.append(item);
   }
-  $("#execution-summary").textContent = `${record.metrics.http_calls} HTTP · ${record.metrics.llm_calls} LLM${record.replay_of ? " (replayed)" : ""} · ${record.metrics.duration_ms} ms`;
+  $("#execution-summary").textContent = `${record.metrics.http_calls} HTTP · ${record.metrics.llm_calls} LLM${record.replay_of ? " (replayed)" : ""}${record.request.web ? ` · ${record.metrics.web_search_calls} hosted searches · ${record.metrics.citation_count} cited URLs` : ""} · ${record.metrics.duration_ms} ms`;
   const trace = $("#trace"); trace.replaceChildren();
   record.trace.forEach((event, i) => {
     const row = element("div", undefined, `trace-event${event.error ? " failed" : ""}`);
