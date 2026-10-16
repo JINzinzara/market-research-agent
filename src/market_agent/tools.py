@@ -1,15 +1,14 @@
 """Deterministic evidence tools. Market figures never come from an LLM."""
 
-from collections import Counter
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 import json
-from math import log
 from pathlib import Path
-import re
 from typing import Any
 
 import httpx
+from nltk.tokenize import wordpunct_tokenize
+from rank_bm25 import BM25Okapi
 
 from .schema import Period, Source, Symbol
 
@@ -101,38 +100,26 @@ def load_documents(path: Path) -> list[Source]:
 
 
 def tokenize(text: str) -> list[str]:
-    return re.findall(r"[0-9a-z가-힣]+", text.lower())
+    return [token.casefold() for token in wordpunct_tokenize(text) if token.isalnum()]
 
 
 def build_bm25(documents: list[Source]) -> dict[str, Any]:
     terms = [tokenize(doc.title + " " + doc.content) for doc in documents]
     lengths = [len(row) for row in terms]
     return {
-        "documents": documents, "frequencies": [Counter(row) for row in terms],
-        "lengths": lengths, "average_length": sum(lengths) / len(lengths) if lengths else 0,
-        "document_frequencies": Counter(term for row in terms for term in set(row)),
+        "documents": documents, "terms": [set(row) for row in terms],
+        "vectorizer": BM25Okapi(terms, k1=1.5, b=0.75) if any(lengths) else None,
     }
 
 
 def search_documents(query: str, index: dict[str, Any], *, top_k: int) -> list[Source]:
-    """Small-corpus BM25, using exercise defaults k1=1.5 and b=0.75."""
+    """Library BM25 ranking; lexical overlap prevents unrelated top-k results."""
     if not query.strip() or type(top_k) is not int or top_k <= 0:
         raise ValueError("query must be non-blank and top_k a positive integer")
-    count = len(index["documents"])
-    if not count or not index["average_length"]:
+    if index["vectorizer"] is None:
         return []
-    scores = []
-    for i, frequencies in enumerate(index["frequencies"]):
-        score = 0.0
-        for term in set(tokenize(query)):
-            frequency = frequencies[term]
-            if not frequency:
-                continue
-            df = index["document_frequencies"][term]
-            idf = log(1 + (count - df + 0.5) / (df + 0.5))
-            norm = 0.25 + 0.75 * index["lengths"][i] / index["average_length"]
-            score += idf * frequency * 2.5 / (frequency + 1.5 * norm)
-        if score > 0:
-            scores.append((i, score))
+    terms = tokenize(query)
+    scores = [(i, float(score)) for i, score in enumerate(index["vectorizer"].get_scores(terms))
+              if set(terms) & index["terms"][i]]
     scores.sort(key=lambda item: (-item[1], item[0]))
     return [index["documents"][i] for i, _ in scores[:top_k]]
