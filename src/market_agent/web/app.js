@@ -20,6 +20,14 @@ async function api(path, body) {
   return data;
 }
 
+async function checkBackend(needsOpenAI) {
+  let status;
+  try { status = await api("/api/status"); }
+  catch { throw new Error("서버 상태를 확인할 수 없습니다. 기존 서버를 종료하고 저장소에서 PYTHONPATH=src .venv/bin/python -m market_agent serve로 다시 시작해 주세요."); }
+  if (status.api_contract !== "research-live-v1") throw new Error("화면과 서버 버전이 다릅니다. 최신 서버를 재시작하고 화면을 새로고침해 주세요.");
+  if (needsOpenAI && !status.openai_key_configured) throw new Error("서버에 OPENAI_API_KEY가 없습니다. 키를 export한 같은 터미널에서 서버를 다시 시작해 주세요.");
+}
+
 function view(name) {
   for (const candidate of ["research", "runs"]) {
     $(`#${candidate}-view`).hidden = candidate !== name;
@@ -62,6 +70,7 @@ $("#web").onchange = () => {
   $("#mode").onchange();
   if (web) $("#mode-note").textContent = "실제 웹 검색과 인용 보고서를 요청합니다. OpenAI 키가 필요하며 모델·검색 비용이 발생합니다. 가격 조회는 지원 종목과 기간이 있을 때만 실행합니다.";
 };
+$("#web").onchange();
 
 $("#research-form").onsubmit = async (event) => {
   event.preventDefault();
@@ -73,6 +82,7 @@ $("#research-form").onsubmit = async (event) => {
     ? `${$("#planner").value === "ollama" ? "로컬 Ollama" : "OpenAI GPT-6 Astra"}에 계획을 요청하고 있습니다. 모델 호출 제한은 300초입니다.`
     : "요청을 검증하고 근거를 수집하고 있습니다…";
   try {
+    await checkBackend($("#planner").value === "openai");
     const record = await api("/api/research", {
       question: $("#question").value, mode: $("#mode").value,
       planner: $("#planner").value, scenario: $("#scenario").value,
@@ -196,19 +206,22 @@ async function loadHistory() {
 $("#refresh-button").onclick = loadHistory;
 $("#evaluate-button").onclick = async () => {
   const button = $("#evaluate-button"); button.disabled = true;
-  $("#eval-feedback").textContent = "20개 개발용 사례를 실행하고 원시 결과를 저장하고 있습니다…";
+  $("#eval-feedback").textContent = "실제 웹 조사와 인용 결과를 기록하고 있습니다. 모델·검색 비용이 발생하며 답변 정확도는 별도 검토합니다…";
   try {
-    activeEvaluation = await api("/api/evaluate", {});
+    await checkBackend(true);
+    activeEvaluation = await api("/api/evaluate", {limit: Number($("#benchmark-limit").value)});
     $("#eval-results").hidden = false;
-    $("#eval-score").textContent = `${activeEvaluation.passed} / ${activeEvaluation.total} passed`;
+    $("#eval-score").textContent = `${activeEvaluation.operational_completed} / ${activeEvaluation.total} executions · accuracy pending review`;
     const cases = $("#eval-cases"); cases.replaceChildren();
     for (const item of activeEvaluation.cases) {
-      const row = element("div", undefined, `eval-case${item.passed ? "" : " failed"}`);
-      const label = element("div", item.case_id);
-      if (item.errors.length) label.append(element("p", item.errors.join(" · ")));
-      row.append(label, element("span", item.passed ? "PASS" : "FAIL")); cases.append(row);
+      const failed = item.run.result.status === "error";
+      const row = element("div", undefined, `eval-case${failed ? " failed" : ""}`);
+      const label = element("div", item.evaluation_id);
+      label.append(element("p", `${item.coverage.cited_hits}/${item.coverage.gold_urls} reference URLs cited`));
+      row.append(label, element("span", `${item.run.result.status} · review pending`)); cases.append(row);
     }
-    $("#eval-feedback").textContent = `${activeEvaluation.evaluated_at} · development-smoke-v1 · 실제 모델 품질 미측정`;
+    const summary = activeEvaluation.summary;
+    $("#eval-feedback").textContent = `${activeEvaluation.evaluated_at} · ${activeEvaluation.suite} · ${activeEvaluation.wall_duration_ms} ms · input ${summary.tokens.input.total ?? "unknown"} / output ${summary.tokens.output.total ?? "unknown"} tokens · 총 비용 미측정 · 의미 평가 검토 대기`;
   } catch (error) { $("#eval-feedback").textContent = `평가 실패: ${error.message}`; }
   finally { button.disabled = false; }
 };
