@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Market Research Agent · Reliability Lab</title>
-  <link rel="stylesheet" href="/app.css?v=web-research-1">
-  <script src="/app.js?v=web-research-1" defer></script>
+  <link rel="stylesheet" href="/app.css?v=live-benchmark-1">
+  <script src="/app.js?v=live-benchmark-1" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -24,16 +24,16 @@
       <form id="research-form" class="panel composer">
         <div class="panel-heading"><h2>What would you like to investigate?</h2><span class="subtle">01 / REQUEST</span></div>
         <label class="sr-only" for="question">Research question</label>
-        <textarea id="question" required maxlength="2000" rows="2">BTCUSDT, ETHUSDT, BNBUSDT의 완료된 UTC 7일 변화를 비교해줘.</textarea>
+        <textarea id="question" required maxlength="2000" rows="2">비트코인 최근 7일 관련 뉴스와 미국 금리·물가 발표를 조사해줘. 공식 자료와 기사 해석을 구분해줘.</textarea>
         <div class="presets"><button type="button" data-question="BTCUSDT, ETHUSDT, BNBUSDT의 완료된 UTC 7일 변화를 비교해줘.">7-day comparison ↗</button><button type="button" data-question="BTC 완료된 UTC 일봉 1개">One completed day ↗</button><button type="button" data-web="true" data-question="비트코인 최근 7일 관련 뉴스와 미국 금리·물가 발표를 조사해줘. 공식 거시 자료와 기사 해석을 구분해줘.">News & macro ↗</button><button type="button" data-web="true" data-question="최근 Fed 금리 결정과 BLS 물가 발표를 공식 자료로 조사해줘.">Official macro releases ↗</button></div>
-        <label class="web-option"><input type="checkbox" id="web"> Search web news & macro · OpenAI paid API</label>
+        <label class="web-option"><input type="checkbox" id="web" checked> Search web news & macro · OpenAI paid API</label>
         <div class="controls">
-          <label>PRICE DATA<select id="mode"><option value="demo">Synthetic market data</option><option value="live">Binance · live API</option></select></label>
-          <label>MODEL<select id="planner"><option value="baseline">Fixed baseline · no LLM</option><option value="ollama">Ollama · qwen3:8b</option><option value="openai">GPT-6 Astra · paid API</option></select></label>
-          <label>FAILURE SCENARIO<select id="scenario"><option value="none">Normal execution</option><option value="eth_timeout">ETH timeout</option><option value="eth_missing">ETH missing candle</option><option value="eth_invalid">ETH invalid price</option><option value="eth_rate_limit">ETH rate limit (429)</option><option value="all_timeout">All symbols timeout</option></select></label>
+          <label>PRICE DATA<select id="mode"><option value="live">Binance · live API</option></select></label>
+          <label>MODEL<select id="planner"><option value="openai">GPT-6 Astra · paid API</option><option value="ollama">Ollama · qwen3:8b · price planner</option></select></label>
+          <input type="hidden" id="scenario" value="none">
           <button type="submit" class="primary" id="run-button">Run research <span>↗</span></button>
         </div>
-        <p id="mode-note" class="mode-note">합성 시세 · 기준 시각 2026-10-16 00:00 UTC. 실제 시장을 나타내지 않습니다.</p>
+        <p id="mode-note" class="mode-note">실제 웹 조사 · OpenAI 모델·검색 비용이 발생합니다.</p>
       </form>
       <p id="feedback" role="status" aria-live="polite"></p>
       <div id="empty-state" class="empty-state"><span class="cross">＋</span><div><strong>A report you can inspect.</strong><p>결과의 원 가격·계산식·출처를 확인하고, 실행 기록에서 실패를 다시 재현할 수 있습니다.</p></div><span class="subtle">NO RUN YET</span></div>
@@ -52,7 +52,7 @@
     </section>
     <section id="runs-view" hidden>
       <div class="intro compact"><div class="eyebrow">A FAILURE SHOULD BE REPRODUCIBLE.</div><h1>Runs & <span>evaluation.</span></h1><p>과거 기록 조회와 현재 코드를 실행하는 재현을 구분합니다. 재현은 외부 네트워크를 사용하지 않습니다.</p></div>
-      <section class="panel"><div class="panel-heading"><div><h2>Development smoke suite</h2><p class="subtle">20 fixed cases · synthetic data · baseline planner</p></div><button id="evaluate-button" class="primary">Run evaluation ↗</button></div><p class="eval-note">개발 중 사용한 사례입니다. 실제 모델 품질·시장 정확도·합격 가능성의 평가가 아닙니다.</p><p id="eval-feedback" role="status" aria-live="polite"></p><div id="eval-results" hidden><div id="eval-score"></div><div id="eval-cases"></div><button class="text-button" id="download-evaluation">Download full evaluation JSON ↓</button></div></section>
+      <section class="panel"><div class="panel-heading"><div><h2>Live research benchmark</h2><p class="subtle">12 real-document questions · 6 event groups · Korean / English</p></div><button id="evaluate-button" class="primary">Run live benchmark · paid ↗</button></div><label>Questions <select id="benchmark-limit"><option value="2">2 · first bilingual pair</option><option value="12">12 · full pilot</option></select></label><p class="eval-note">실제 Astra 웹 조사입니다. 실행 성공·기준 URL 확보와 답변 정확도를 구분합니다. 정답·인용·시점·언어 평가는 검토 후에만 점수로 반영합니다. 비공개 평가셋은 아닙니다.</p><p id="eval-feedback" role="status" aria-live="polite"></p><div id="eval-results" hidden><div id="eval-score"></div><div id="eval-cases"></div><button class="text-button" id="download-evaluation">Download full benchmark JSON ↓</button></div></section>
       <section class="panel run-history"><div class="panel-heading"><h2>Execution history</h2><button id="refresh-button" class="text-button">Refresh ↻</button></div><div id="history"><p class="subtle">아직 저장한 실행이 없습니다.</p></div></section>
     </section>
     <footer><span>MARKET RESEARCH AGENT</span><span>Evidence → calculation → review → replay</span></footer>
