@@ -1,34 +1,23 @@
-# 02 — 구현된 도구 읽기와 수정
+# 재사용 검색 라이브러리와 오케스트레이션
 
-**[tools.py](../src/market_agent/tools.py)는 본문까지 구현됐다.** 이전의 빈 함수 작성 과제 대신, 아래 경계를 이해하고 직접 요구 변경을 수행한다.
+**직접 만든 BM25 점수식과 정규식 토큰화를 제거했다.** 보존된 로컬 문서 검색은 NLTK `wordpunct_tokenize`와 `rank_bm25.BM25Okapi`를 사용한다. live 뉴스 검색은 별도 OpenAI hosted web search이며, 이 로컬 BM25를 거치지 않는다.
 
-## 계산과 시간
+## LangChain을 통째로 넣지 않은 이유
 
-`calculate_return()`은 양수·유한한 Decimal만 받고 40자리 정밀도로 변화율을 반환한다. 전역 Decimal context를 바꾸지 않는다. 별도 `display_return_pct`는 소수 둘째 자리 HALF_UP이다.
+공식 [BM25Retriever 코드](https://github.com/langchain-ai/langchain-community/blob/main/libs/community/langchain_community/retrievers/bm25.py)는 `rank_bm25`를 감싼다. 기본 전처리도 `text.split()`이다. 따라서 LangChain을 가져오는 것만으로 한국어 형태소 처리나 검색 정확도가 자동으로 개선되지 않는다. 2026-10-16 확인 당시 이 공식 community 저장소는 2026-06-19 보관 상태였다.
 
-`market_window()`는 timezone-aware `as_of`를 UTC로 바꾼 뒤 자정 경계를 만든다. 한국 시각 08:59는 UTC 전날 23:59이므로 먼저 한국 날짜를 자정으로 만들면 잘못된다. 이 경계는 테스트로 고정했다.
+이번 목적은 알고리즘 재구현을 없애는 것이므로 원 라이브러리를 직접 사용했다. 범용 LangChain 인터페이스·다중 검색기 합성·모델 교체 같은 요구가 생기면 그 인터페이스의 이득을 따로 평가한다. NLTK 단어/구두점 분리는 한국어 형태소 분석이 아니며 품질 개선을 측정한 결과도 없다.
 
-## Binance 일봉 검증
+검색 횟수 증가와 프레임워크 효율 향상은 같은 말이 아니다. 현재 검색·페이지 열기 결정은 OpenAI 제공자 내부에서 이루어진다. 바깥에 LangGraph를 추가해도 이 내부 네트워크 지연이 줄거나 검색 횟수가 자동 늘어나지 않는다. 앱 자체의 조건부 재검색, 충분한 근거 판단, 중간 재개, 긴 실행 상태 관리가 필요해질 때 LangGraph를 쓰는 편이 설계·유지보수 측면에서 유리할 수 있다. 속도·비용 우위는 별도 실험이 필요하다. 상태 지속과 재개 기능은 [LangGraph 공식 문서](https://docs.langchain.com/oss/python/langgraph/interrupts)를 참고했다.
 
-`fetch_market_data()`는 종목 하나와 기간을 받는다. 정확한 완료 일봉 수, 각 행의 12개 필드, 시작·종료 시각, 순서·중복·누락, 원 가격 문자열, 유한·양수 OHLC와 고저 범위를 검사한다. HTTP 오류는 숨기지 않는다.
+## 로컬 문서 경계
 
-한 종목의 오류와 다른 종목 결과를 합치는 곳은 `runtime.py`다. 도구 안에서 기본 시세를 만들거나 재시도하지 않는다. `Source.content`에는 원 일봉·구간·계산값·표시값이 들어간다.
+`build_bm25()`는 검증한 Source 목록으로 라이브러리 인덱스를 만든다. `search_documents()`는 점수 순서로 반환하되 질의와 토큰이 전혀 겹치지 않는 문서를 제외한다. 라이브러리는 비매칭 문서도 top-k로 반환할 수 있기 때문이다. 작은 코퍼스에서는 유효한 일치 점수도 0 또는 음수일 수 있어 점수 > 0을 정답 조건으로 쓰지 않는다.
 
-## 고정 문서 검색
+소문자 정규화와 구두점 제외만 앱에서 수행한다. `k1=1.5`, `b=.75`는 기존 초기 가정을 유지했으며 최적값을 검증한 것은 아니다. 라이브러리의 IDF 정의가 이전 직접 구현과 다르므로 점수 숫자를 이전 값과 직접 비교하지 않는다. 새 벤치마크의 답변 정확도를 BM25 점수로 표현하지 않는다.
 
-`load_documents()`는 JSON의 중복 ID와 잘못된 출처 종류를 거부한다. 코퍼스는 [documents.json](../src/market_agent/data/documents.json)의 검토된 API 요약 3개다.
+## 가격 도구
 
-BM25는 제목과 본문에 동일한 `[0-9a-z가-힣]+` 토큰화를 적용한다. 인덱스의 `documents`는 원 `Source` 목록이고, 빈 자료·무일치 결과는 빈 목록이다. 양수 점수만 반환하며 동점은 원 순서다. 형태소 분석·동의어 이해·의미 검색은 하지 않는다.
+[tools.py](../src/market_agent/tools.py)는 계속 Binance 일봉의 수·순서·중복·누락·완료 시각·원 가격 문자열·OHLC 범위를 검사한다. `calculate_return()`은 40자리 Decimal로 계산하고 표시 반올림은 분리한다. 잘못된 자료를 기본 시세로 대체하지 않는다. 해당 경계와 실패 시 다른 종목 보존은 테스트로 유지했다.
 
-`k1=1.5`, `b=.75`는 학습 참고 코드의 기본값이며 이 제품의 최적값이 아니다. 호출부는 `top_k=2`를 초기 가정으로 사용한다.
-
-외부 기사·뉴스·거시 자료는 이 BM25 함수가 찾지 않는다. 별도 [web_research.py](../src/market_agent/web_research.py)의 OpenAI hosted web search 경계를 사용하며, 원문 직접 수집과 인용 메타데이터를 구분한다. [실행과 한계](web-research.md)를 함께 읽는다.
-
-## 확인 명령과 연습
-
-```sh
-PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_tools.py' -v
-PYTHONPATH=src python3 -m market_agent research 'BTC ETH 7d' --scenario eth_missing
-```
-
-다음에는 잘못된 일봉 순서·시가 0·누락 일봉을 직접 만들어 거부되는 위치를 설명한다. 지원 종목 추가를 연습한다면 스키마·도구·계획 파서·합성 자료·평가·문서를 함께 바꿔야 한다.
+현재 검증 환경: NLTK 3.10.3, rank-bm25 0.2.2, Python 3.13. 실제 연구 품질 평가와 검증 한계는 [live 평가 기준](live-research-evaluation.md)에 있다.
